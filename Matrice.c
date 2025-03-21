@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 typedef float proba;
 typedef int indice;
+
+#define abs(x) ((x) > 0 ? (x) : -(x))
+
+indice L=0,C=0,M=0;//L cest le nbr de lignes C cest le nbr de colonnes M cest le nbr de valeur non nulles
+proba alpha = 0.85;  // Facteur de téléportation
+proba sigma = 1e-6;  // Critère de convergence (epsilon)
 
 struct elem{
     indice i,j;
@@ -13,12 +20,24 @@ struct elem *p;
 proba *x;
 proba *y;
 
-indice L=0,C=0,M=0;//L cest le nbr de lignes C cest le nbr de colonnes M cest le nbr de valeur non nulles
+
+
 
 struct matrice {
     indice N;
     proba **V;
 };
+
+// Fonction de norme ||x - y||
+float norme(proba *x,proba *y){
+    indice i;
+    float somme=0.0;
+    for (i=0;i<C;i++){
+        somme+=abs(x[i]-y[i]);
+    }
+    return somme;
+}
+
 struct matrice init (indice ma_taille){
     indice i,j;
     struct matrice t;
@@ -190,22 +209,42 @@ void ecrire_matrice_creuse(char *nom_fichier, struct matrice t) {
     fclose(f);
 }
 
-
+// Initialiser le vecteur x avec 1/N
 void initx(proba *x, indice taille) {
     for (indice i = 0; i < taille; i++) {
         x[i] = 1.0 / taille;
     }
 }
 
-
+// Multiplication matrice-vecteur
 void mult (proba *x,struct elem *p,proba *y){
-    indice i,j,k;
+    indice i, j, k;
     struct elem e;
-    for (k=0;k<M;k++){
-        e=p[k];
-        i=e.i;
-        j=e.j;
-        y[j]+=x[i]*e.val;
+
+    // Réinitialisation du tableau y à zéro avant le calcul
+    for (i = 0; i < C; i++) {
+        y[i] = 0.0;
+    }
+
+    // Multiplication matrice-vecteur (mise à jour de PageRank)
+    for (k = 0; k < M; k++) {
+        e = p[k];
+        i = e.i;  // Indice de départ du lien
+        j = e.j;  // Indice d'arrivée du lien
+        y[j] += alpha * x[i] * e.val;  // Application du facteur alpha
+    }
+
+    // Calcul du facteur de téléportation
+    proba somme = 0.0;
+    for (i = 0; i < C; i++) {
+        somme += x[i];
+    }
+
+    proba teleporte = (1.0 - alpha) * somme / C;
+    
+    // Ajout du facteur de téléportation au vecteur y
+    for (i = 0; i < C; i++) {
+        y[i] += teleporte;
     }
 }
 
@@ -254,104 +293,65 @@ indice calculer_nombre_elements_non_nuls_creuse(char *nom_fichier) {
     return M;
 }
 
+float une_iteration(proba *x, struct elem *p, proba *y) {
+    mult(x, p, y);
+    float s = norme(x, y);
+    recopie(x, y);
+    return s;
+}
 
-
+void iterer(proba *x, struct elem *p, proba *y) {
+    indice k= 0;
+    float s=1.0;
+    struct timeval t1, t2;
+    gettimeofday(&t1, NULL);
+    while (s > sigma) {
+        k++;
+        s=une_iteration(x, p, y);
+        gettimeofday(&t2, NULL);
+        //printf("Iteration %d : norme = %f, temps = %f\n", k, s, (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1e6);
+    }
+    gettimeofday(&t2, NULL);
+    printf("Convergence en %d iterations, temps total = %f\n", k, (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1e6);
+}
 
 
 
 int main() {
-    struct matrice t;
-    
-    // 1. Lire la matrice pleine depuis un fichier
-    printf("Lecture de la matrice pleine...\n");
-    t = lire_matrice("matricepleine.txt");
+    struct matrice t = matrice_creuse_a_pleine("matricecreuse.txt");
 
-    // Vérification de la taille de la matrice
     if (t.N <= 0) {
-        printf("Erreur : La taille de la matrice est invalide (%d)\n", t.N);
+        printf("Erreur : Taille de la matrice invalide.\n");
         return 1;
     }
 
-    // Initialisation de L et C (nombre de lignes et colonnes)
     L = C = t.N;
-
-    // 2. Afficher la matrice lue
-    printf("Matrice lue :\n");
-    afficher_matrice(t);
-
-    // 3. Sauvegarder la matrice lue dans un autre fichier
-    printf("Écriture de la matrice pleine dans 'matriceecriture.txt'...\n");
-    ecrire_matrice("matriceecriture.txt", t);
-
-    // 4. Conversion en matrice creuse
-    printf("Conversion en matrice creuse...\n");
-    ecrire_matrice_creuse("matricecreuse.txt", t);
-
-    // 5. Charger la matrice creuse et la reconvertir en pleine
-    printf("Lecture de la matrice creuse et conversion en pleine...\n");
-    struct matrice t_creuse = matrice_creuse_a_pleine("matricecreuse.txt");
-
-    printf("Matrice convertie depuis le format creux :\n");
-    afficher_matrice(t_creuse);
-
-    // 6. Calculer M (nombre de valeurs non nulles) à partir du fichier creux
-    printf("Calcul du nombre d'éléments non nuls dans la matrice creuse...\n");
     M = calculer_nombre_elements_non_nuls_creuse("matricecreuse.txt");
-    printf("M (nombre d'éléments non nuls) = %d\n", M);
 
-    if (M <= 0) {
-        printf("Erreur : M est invalide (%d), impossible de continuer.\n", M);
-        return 1;
-    }
-
-    // 7. Allocation dynamique du vecteur x, y et tableau p
     x = malloc(C * sizeof(proba));
     y = malloc(C * sizeof(proba));
     p = malloc(M * sizeof(struct elem));
 
-    if (x == NULL || y == NULL || p == NULL) {
-        printf("Erreur d'allocation mémoire pour x, y ou p\n");
+    if (!x || !y || !p) {
+        printf("Erreur d'allocation mémoire\n");
         return 1;
     }
 
-    // 8. Initialisation du vecteur x avec 1/N
     initx(x, t.N);
-
-    // 9. Remplir `p` avec les éléments non nuls de la matrice
-    remplir_triplets(p, t);
-
-    // Vérification du contenu de `p`
-    printf("=== Contenu de p (matrice creuse sous forme de triplets) ===\n");
-    for (indice k = 0; k < M; k++) {
-        printf("p[%d] : i=%d, j=%d, val=%.6f\n", k, p[k].i, p[k].j, p[k].val);
-    }
-    printf("============================================================\n");
-
-    // 10. Mise à zéro de y
+    remplir_triplets(p, t); // ca bug
     mettreazero(y);
 
-    // 11. Appliquer la multiplication
-    printf("Multiplication matrice x vecteur...\n");
-    mult(x, p, y);
+    printf("Début de l'itération...\n");
+    iterer(x, p, y);
 
-    // 12. Afficher le résultat de la multiplication
-    printf("Résultat de la multiplication :\n");
-    for (int i = 0; i < C; i++) {
-        printf("%f ", y[i]);
-    }
-    printf("\n");
-
-    // 13. Libération de la mémoire
     free(x);
     free(y);
     free(p);
 
-    for (int i = 0; i < t.N; i++) {
+    for (indice i = 0; i < t.N; i++) {
         free(t.V[i]);
-        free(t_creuse.V[i]);
     }
     free(t.V);
-    free(t_creuse.V);
 
     return 0;
 }
