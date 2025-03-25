@@ -48,7 +48,7 @@ struct matrice init (indice ma_taille){
         exit(1);
     }
     for (i=0;i<ma_taille;i++){
-        t.V[i]=(proba*)malloc(ma_taille*sizeof(proba));
+        t.V[i] = (proba*)calloc(ma_taille, sizeof(proba));
         if (t.V[i]==NULL) {
             printf("Erreur d'allocation\n");
             exit(1);
@@ -264,11 +264,22 @@ void recopie(proba *x,proba *y){
 
 void remplir_triplets(struct elem *p, struct matrice t) {
     indice k = 0;
-    for (indice i = 0; i < t.N; i++)
-        for (indice j = 0; j < t.N; j++)
-            if (t.V[i][j] != 0.0)
-                p[k++] = (struct elem){i, j, t.V[i][j]};
+    for (indice i = 0; i < t.N; i++) {
+        for (indice j = 0; j < t.N; j++) {
+            if (t.V[i][j] != 0.0) {
+                if (k >= M) {
+                    printf("Erreur : dépassement du tableau triplet (%d au lieu de %d)\n", k, M);
+                    exit(1);
+                }
+                p[k].i = i;
+                p[k].j = j;
+                p[k].val = t.V[i][j];
+                k++;
+            }
+        }
+    }
 }
+
 
 indice calculer_nombre_elements_non_nuls_creuse(char *nom_fichier) {
     FILE *f = fopen(nom_fichier, "r");
@@ -315,19 +326,95 @@ void iterer(proba *x, struct elem *p, proba *y) {
     printf("Convergence en %d iterations, temps total = %f\n", k, (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1e6);
 }
 
+void lire_matrice_mtx(char *nom_fichier, struct elem *p, struct matrice *t) {
+    FILE *f;
+    char ligne[256];
+    int lignes_entete = 0;
+    
+    f = fopen(nom_fichier, "r");
+    if (f == NULL) {
+        printf("Erreur d'ouverture du fichier '%s'\n", nom_fichier);
+        exit(1);
+    }
 
+    // Ignorer les lignes de commentaire et d'en-tête
+    while (fgets(ligne, sizeof(ligne), f)) {
+        if (ligne[0] != '%') {
+            break;
+        }
+        lignes_entete++;
+    }
+
+    // Lecture des dimensions et du nombre d'éléments
+    sscanf(ligne, "%d %d %d", &t->N, &t->N, &M);
+    
+    // Initialisation de la matrice
+    // Modification : allocation manuelle plutôt que copie
+    t->V = malloc(t->N * sizeof(proba*));
+    for (int i = 0; i < t->N; i++) {
+        t->V[i] = calloc(t->N, sizeof(proba));
+    }
+
+    // Variables pour la lecture des triplets
+    int ligne_elem, col_elem;
+    float val_elem;
+    int index_triplet = 0;
+
+    // Lecture des éléments
+    while (fscanf(f, "%d %d %f", &ligne_elem, &col_elem, &val_elem) == 3) {
+        // Ajustement des indices (1-based to 0-based)
+        ligne_elem--;
+        col_elem--;
+
+        // Remplissage de la matrice dense
+        t->V[ligne_elem][col_elem] = val_elem;
+
+        // Remplissage des triplets
+        p[index_triplet].i = ligne_elem;
+        p[index_triplet].j = col_elem;
+        p[index_triplet].val = val_elem;
+        
+        index_triplet++;
+    }
+
+    fclose(f);
+}
 
 int main() {
-    struct matrice t = matrice_creuse_a_pleine("matricecreuse.txt");
+    // Nom du fichier en dur dans le code
+    char *nom_fichier = "webbase-1M.mtx";
 
-    if (t.N <= 0) {
-        printf("Erreur : Taille de la matrice invalide.\n");
+    // Lire le fichier MatrixMarket
+    struct matrice t;
+    t.N = 0;  // Initialiser à 0 pour que la fonction puisse définir la taille
+
+    // Calculer le nombre d'éléments non nuls
+    FILE *f = fopen(nom_fichier, "r");
+    if (f == NULL) {
+        printf("Erreur d'ouverture du fichier '%s'\n", nom_fichier);
         return 1;
     }
 
-    L = C = t.N;
-    M = calculer_nombre_elements_non_nuls_creuse("matricecreuse.txt");
+    char ligne[256];
+    int lignes_entete = 0;
+    while (fgets(ligne, sizeof(ligne), f)) {
+        if (ligne[0] != '%') {
+            break;
+        }
+        lignes_entete++;
+    }
 
+    int taille, taille2, nb_elements;
+    sscanf(ligne, "%d %d %d", &taille, &taille2, &nb_elements);
+    fclose(f);
+
+    // Définir les variables globales
+    L = C = taille;
+    M = nb_elements;
+
+    printf("Matrice : %d x %d, Éléments non nuls : %d\n", L, C, M);
+
+    // Allouer la mémoire
     x = malloc(C * sizeof(proba));
     y = malloc(C * sizeof(proba));
     p = malloc(M * sizeof(struct elem));
@@ -337,17 +424,27 @@ int main() {
         return 1;
     }
 
-    initx(x, t.N);
-    remplir_triplets(p, t); // ca bug
-    mettreazero(y);
+    // Lire la matrice
+    lire_matrice_mtx(nom_fichier, p, &t);
 
-    printf("Début de l'itération...\n");
+    // Initialiser le vecteur de PageRank
+    initx(x, C);
+
+    // Effectuer l'algorithme PageRank
     iterer(x, p, y);
 
-    free(x);
-    free(y);
-    free(p);
+    // Afficher les résultats (optionnel)
+    printf("\nScores de PageRank :\n");
+    for (int i = 0; i < C; i++) {
+        if (x[i] > 0.001) {  // Afficher uniquement les scores significatifs
+            printf("Nœud %d : %.6f\n", i+1, x[i]);
+        }
+    }
 
+    // Libérer la mémoire
+    free(x); 
+    free(y); 
+    free(p);
     for (indice i = 0; i < t.N; i++) {
         free(t.V[i]);
     }

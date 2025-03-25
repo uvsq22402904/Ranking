@@ -2,112 +2,80 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define C 6  // Nombre de pages (colonnes et lignes de la matrice M)
-#define alpha 0.85  // Facteur de téléportation
-#define EPSILON 1e-6  // Seuil de convergence
-#define MAX_ITER 100  // Nombre maximal d'itérations
+// Inclure directement le fichier d'implémentation
+#include "test2.c"
 
-typedef double proba;  
-typedef int indice;
-
-void initx(proba *x, indice taille) {
-    for (indice i = 0; i < taille; i++) {
-        x[i] = 1.0 / taille;
+void test_mult() {
+    struct elem test_matrix[] = {
+        {0, 1, 0.5},  
+        {1, 2, 0.5},  
+        {2, 0, 1.0}   
+    };
+    
+    indice M = 3;  
+    indice C = 3;  
+    
+    proba x[3] = {1.0/3, 1.0/3, 1.0/3};  
+    proba y[3] = {0};  
+    
+    mult(x, test_matrix, y, M, C);
+    
+    printf("Test mult() - Résultats :\n");
+    for (int i = 0; i < C; i++) {
+        printf("y[%d] = %f\n", i, y[i]);
     }
 }
 
-void multiplication(proba M[C][C], proba *x, proba *y) {
-    proba somme = 0.0;
+void test_pagerank_sum() {
+    char *nom_fichier = "webbase-1M.mtx";
+    indice C, M;
+    struct elem *p = NULL;
 
-    // Initialisation de y à zéro
-    for (int i = 0; i < C; i++) {
-        y[i] = 0.0;
+    lire_matrice_mtx(nom_fichier, &p, &C, &M);
+
+    printf("Matrice : %d x %d, Éléments non nuls : %d\n", C, C, M);
+
+    proba *x = malloc(C * sizeof(proba));
+    proba *y = malloc(C * sizeof(proba));
+
+    if (!x || !y) {
+        printf("Erreur d'allocation mémoire\n");
+        free(p);
+        return;
     }
 
-    // Multiplication de la matrice M par le vecteur x
-    for (int i = 0; i < C; i++) {
-        for (int j = 0; j < C; j++) {
-            y[i] += M[i][j] * x[j];
-        }
-        somme += y[i];
-    }
-
-    // Ajout du facteur de téléportation
-    proba teleporte = (1.0 - alpha) / C;
-    for (int i = 0; i < C; i++) {
-        y[i] = alpha * y[i] + teleporte;
-    }
-
-    // Normalisation
-    somme = 0.0;
-    for (int i = 0; i < C; i++) {
-        somme += y[i];
-    }
-
-    if (fabs(somme - 1.0) > EPSILON) {
-        for (int i = 0; i < C; i++) {
-            y[i] /= somme;
-        }
-    }
-}
-
-double erreur(proba *x, proba *y) {
-    double maxDiff = 0.0;
-    for (int i = 0; i < C; i++) {
-        double diff = fabs(x[i] - y[i]);
-        if (diff > maxDiff) {
-            maxDiff = diff;
-        }
-    }
-    return maxDiff;
-}
-
-void affiche_vecteur(proba *v) {
-    for (int i = 0; i < C; i++) {
-        printf("%.6f ", v[i]);
-    }
-    printf("\n");
-}
-
-void pagerank(proba M[C][C]) {
-    proba x[C], y[C];
     initx(x, C);
+    iterer(x, p, y, M, C);
 
-    printf("Iteration 0 : ");
-    affiche_vecteur(x);
-
-    int iter = 0;
-    while (iter < MAX_ITER) {
-        multiplication(M, x, y);
-        double diff = erreur(x, y);
-
-        printf("Iteration %d : ", iter + 1);
-        affiche_vecteur(y);
-
-        if (diff < EPSILON) {
-            break;
-        }
-
-        // Mise à jour de x pour la prochaine itération
-        for (int i = 0; i < C; i++) {
-            x[i] = y[i];
-        }
-
-        iter++;
+    proba somme_totale = 0.0;
+    for (indice i = 0; i < C; i++) {
+        somme_totale += x[i];
     }
+
+    printf("\nSomme totale des PageRanks : %f\n", somme_totale);
+    
+    if (fabs(somme_totale - 1.0) < 0.001) {
+        printf("✅ Somme CORRECTE (proche de 1)\n");
+    } else {
+        printf("❌ Somme INCORRECTE (doit être proche de 1)\n");
+    }
+
+    //printf("\nScores de PageRank :\n");
+    //for (indice i = 0; i < C; i++) {
+    //    printf("Nœud %d : %.6f\n", i + 1, x[i]);
+    //}
+
+    free(x);
+    free(y);
+    free(p);
 }
 
 int main() {
-    proba M[C][C] = {
-        {0.25, 0.25, 0, 0.25, 0, 0.25},
-        {0, 0, 0.25, 0.25, 0.25, 0.25},
-        {0.25, 0.25, 0, 0.25, 0.25, 0},
-        {0, 0, 0, 0, 1, 0},
-        {0, 0, 1, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0} // Page morte
-    };
+    printf("Test de la fonction mult() :\n");
+    test_mult();
 
-    pagerank(M);
+    printf("\n--- Test PageRank Sum ---\n");
+    test_pagerank_sum();
 
     return 0;
 }
