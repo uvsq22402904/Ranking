@@ -1,147 +1,225 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <sys/time.h>
+#include <math.h>  // Pour fabs()
 
-#define DAMPING 0.85
-#define EPSILON 1e-6
-#define MAX_ITER 1000
-
-typedef double proba;
+typedef float proba;
 typedef int indice;
 
-indice N, M;  // Number of nodes and edges
-struct elem *P;
-proba *x, *y, *dangling;  // Changed 'f' to 'dangling'
+proba alpha = 0.85;  // Facteur de téléportation
+proba sigma = 1e-6;  // Critère de convergence (epsilon)
 
 struct elem {
     indice i, j;
     proba val;
 };
 
-// Allocate memory for the structures
-void allocateMemory(indice N, indice M) {
-    P = malloc(M * sizeof(struct elem));
-    x = malloc(N * sizeof(proba));
-    y = malloc(N * sizeof(proba));
-    dangling = calloc(N, sizeof(proba)); // Initialize to 0
-    if (!P || !x || !y || !dangling) {
-        perror("Memory allocation failed.");
-        exit(EXIT_FAILURE);
+struct matrice {
+    indice N;
+    proba **V;
+};
+
+// Fonction de norme ||x - y||
+float norme(proba *x, proba *y, indice taille) {
+    float somme = 0.0;
+    for (indice i = 0; i < taille; i++) {
+        somme += fabs(x[i] - y[i]);  // Utilisation de fabs() pour la sûreté
+    }
+    return somme;
+}
+
+// Initialiser le vecteur x avec 1/N
+void initx(proba *x, indice taille) {
+    for (indice i = 0; i < taille; i++) {
+        x[i] = 1.0 / taille;
     }
 }
 
-// Read the Matrix Market file (.mtx format)
-void lectureFichier(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        fprintf(stderr, "Error opening file '%s'\n", filename);
-        exit(EXIT_FAILURE);
-    }
+void mult(proba *x, struct elem *p, proba *y, indice M, indice C) {
+    indice i, j, k;
     
-    char line[256];
-    do {
-        fgets(line, sizeof(line), file);
-    } while (line[0] == '%');  // Skip comments in .mtx format
-
-    sscanf(line, "%d %d %d", &N, &N, &M); // Square matrix
-    allocateMemory(N, M);
-
-    for (indice k = 0; k < M; k++) {
-        fscanf(file, "%d %d %lf", &P[k].i, &P[k].j, &P[k].val);
-        P[k].i;  // Convert to zero-based indexing
-        P[k].j;
-
-        // Mark nodes that have outbound links
-        dangling[P[k].i] = 1;  
-    }
-    fclose(file);
-}
-
-// Set y to zero
-void mettre_a_zero(proba *y) {
-    for (indice i = 0; i < N; i++) {
+    // Réinitialisation du tableau y à zéro
+    for (i = 0; i < C; i++) {
         y[i] = 0.0;
     }
-}
 
-// Multiply x * P (sparse matrix multiplication)
-void mult(proba *x, struct elem *P, proba *y) {
-    mettre_a_zero(y);
-    for (indice k = 0; k < M; k++) {
-        y[P[k].j] += x[P[k].i] * P[k].val;
+    // Détection des dangling nodes (pages sans liens sortants)
+    int *has_outlinks = calloc(C, sizeof(int));
+    for (k = 0; k < M; k++) {
+        has_outlinks[p[k].i] = 1;
+    }
+
+    // Calcul de la masse des dangling nodes
+    proba dangling_mass = 0.0;
+    for (i = 0; i < C; i++) {
+        if (!has_outlinks[i]) {
+            dangling_mass += x[i];
+        }
+    }
+    free(has_outlinks);
+
+    // Multiplication matrice-vecteur (mise à jour de PageRank)
+    for (k = 0; k < M; k++) {
+        i = p[k].i;
+        j = p[k].j;
+        y[j] += alpha * x[i] * p[k].val;
+    }
+
+    // Ajout de la masse des dangling nodes (redistribuée uniformément)
+    proba dangling_contribution = alpha * dangling_mass / C;
+    for (i = 0; i < C; i++) {
+        y[i] += dangling_contribution;
+    }
+
+    // Facteur de téléportation
+    proba somme_x = 0.0;
+    for (i = 0; i < C; i++) {
+        somme_x += x[i];
+    }
+
+    proba teleporte = (1.0 - alpha) * somme_x / C;
+    
+    // Ajout du facteur de téléportation
+    for (i = 0; i < C; i++) {
+        y[i] += teleporte;
+    }
+
+    // 🔥 **Normalisation pour s'assurer que sum(y) == 1**
+    proba somme_y = 0.0;
+    for (i = 0; i < C; i++) {
+        somme_y += y[i];
+    }
+    if (somme_y > 0) {  // Éviter une division par zéro
+        for (i = 0; i < C; i++) {
+            y[i] /= somme_y;
+        }
     }
 }
 
-// Compute norm for convergence check
-double norme_diff(proba *x, proba *y) {
-    double sum = 0.0;
-    for (indice i = 0; i < N; i++) {
-        sum += fabs(x[i] - y[i]);
-    }
-    return sum;
-}
 
-// Initialize x(0) = 1/N
-void init_x() {
-    for (indice i = 0; i < N; i++) {
-        x[i] = 1.0 / N;
-    }
-}
-
-// Apply damping factor and handle dangling nodes
-void apply_damping() {
-    double S = 0.0;  // Sum of contributions from dangling nodes
-    for (indice i = 0; i < N; i++) {
-        if (!dangling[i]) S += x[i];  
-    }
-    S = (DAMPING / N) * S;
-
-    for (indice i = 0; i < N; i++) {
-        y[i] = DAMPING * y[i] + (1.0 - DAMPING) / N + S;
-    }
-}
-
-void recopie(proba *x, proba *y){
-    for (indice i = 0; i < N; i++){
+void recopie(proba *x, proba *y, indice taille) {
+    for (indice i = 0; i < taille; i++) {
         x[i] = y[i];
     }
 }
 
-// Compute PageRank
-void pageRank() {
-    int iter;
-    init_x();
-    for (iter = 0; iter < MAX_ITER; iter++) {
-        mult(x, P, y);
-        apply_damping();
-        if (norme_diff(x, y) < EPSILON) break;
-        recopie(x, y);
-    }
+float une_iteration(proba *x, struct elem *p, proba *y, indice M, indice C) {
+    mult(x, p, y, M, C);
+    float s = norme(x, y, C);
+    recopie(x, y, C);
+    return s;
 }
 
-// Display results
-void afficher_resultats() {
-    printf("PageRank values:\n");
-    float sum = 0;
-    for (indice i = 0; i < N; i++) {
-        printf("Page %d: %lf\n", i + 1, x[i]);
-        sum += x[i];
+void iterer(proba *x, struct elem *p, proba *y, indice M, indice C) {
+    indice k = 0;
+    float s = 1.0;
+    struct timeval t1, t2;
+    gettimeofday(&t1, NULL);
+
+    while (s > sigma) {
+        k++;
+        s = une_iteration(x, p, y, M, C);
     }
-    printf("Sum: %f\n", sum);
+
+    gettimeofday(&t2, NULL);
+    printf("Convergence en %d itérations, temps total = %f s\n", k, 
+           (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1e6);
 }
 
+// Lecture du fichier MatrixMarket
+void lire_matrice_mtx(char *nom_fichier, struct elem **p, indice *C, indice *M) {
+    FILE *f = fopen(nom_fichier, "r");
+    if (f == NULL) {
+        printf("Erreur d'ouverture du fichier '%s'\n", nom_fichier);
+        exit(1);
+    }
 
+    char ligne[256];
 
-// Main function
-int main() {
-    lectureFichier("matrices/yanis.txt");
-    pageRank();
-    afficher_resultats();
+    // Ignorer les lignes de commentaire
+    while (fgets(ligne, sizeof(ligne), f)) {
+        if (ligne[0] != '%') break;
+    }
+
+    // Lire les dimensions
+    indice taille, nb_elements;
+    sscanf(ligne, "%d %d %d", &taille, &taille, &nb_elements);
     
-    // Free memory
-    free(P);
-    free(x);
-    free(y);
-    free(dangling);
+    *C = taille;
+    *M = nb_elements;
+
+    *p = malloc(nb_elements * sizeof(struct elem));
+    if (*p == NULL) {
+        printf("Erreur d'allocation mémoire pour la matrice creuse\n");
+        exit(1);
+    }
+
+    // Lecture des éléments
+    for (indice i = 0; i < nb_elements; i++) {
+        indice ligne_elem, col_elem;
+        float val_elem;
+
+        fscanf(f, "%d %d %f", &ligne_elem, &col_elem, &val_elem);
+
+        (*p)[i].i = ligne_elem - 1;  // 1-based to 0-based
+        (*p)[i].j = col_elem - 1;
+        (*p)[i].val = val_elem;
+    }
+
+    fclose(f);
+    // Normalisation des liens sortants
+    proba *sum_out = calloc(*C, sizeof(proba));
+    for (indice k = 0; k < *M; k++) {
+        sum_out[(*p)[k].i] += (*p)[k].val;
+    }
+
+    for (indice k = 0; k < *M; k++) {
+        if (sum_out[(*p)[k].i] > 0) {
+            (*p)[k].val /= sum_out[(*p)[k].i];
+        }
+    }
+
+    free(sum_out);
 
 }
+
+//int main() {
+//    char *nom_fichier = "small_test_matrix.mtx";
+//    indice C, M;
+//    struct elem *p = NULL;
+//
+//    lire_matrice_mtx(nom_fichier, &p, &C, &M);
+//
+//    printf("Matrice : %d x %d, Éléments non nuls : %d\n", C, C, M);
+//
+//    // Allocation mémoire pour PageRank
+//    proba *x = malloc(C * sizeof(proba));
+//    proba *y = malloc(C * sizeof(proba));
+//
+//    if (!x || !y) {
+//        printf("Erreur d'allocation mémoire\n");
+//        free(p);
+//        return 1;
+//    }
+//
+//    // Initialisation
+//    initx(x, C);
+//
+//    // Exécution de l'algorithme PageRank
+//    iterer(x, p, y, M, C);
+//
+//    // Affichage des scores
+//    printf("\nScores de PageRank :\n");
+//    for (indice i = 0; i < C; i++) {
+//        if (x[i] > 0.001) {
+//            printf("Nœud %d : %.6f\n", i + 1, x[i]);
+//        }
+//    }
+//
+//    // Libération de la mémoire
+//    free(x);
+//    free(y);
+//    free(p);
+//
+//    return 0;
+//}
