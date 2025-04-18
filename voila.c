@@ -40,37 +40,48 @@ void recopie(proba *x, proba *y, indice taille){
 
 
 void mult(proba *x, struct elem *p, proba *y, indice taille, indice M) {
-    for (indice i = 0; i < taille; i++) y[i] = 0.0;
+    // Initialize y to zeros
+    for (indice i = 0; i < taille; i++) {
+        y[i] = 0.0;
+    }
 
     // 1. Multiplier les contributions normales (liens sortants existants)
     for (indice k = 0; k < M; k++) {
         y[p[k].j] += alpha * x[p[k].i] * p[k].val;
     }
 
-    // 2. Ajouter l’effet des nœuds dangling (distribuent leur poids à tous les nœuds)
+    // 2. Ajouter l'effet des nœuds dangling (distribuent leur poids à tous les nœuds)
     proba somme_dangling = 0.0;
     for (indice i = 0; i < taille; i++) {
         if (est_dangling[i]) {
             somme_dangling += x[i];
         }
     }
-    proba contribution_dangling = 0.0;
-    if (taille > 0) {
-        contribution_dangling = alpha * somme_dangling / taille;
+    
+    // Distribute dangling node weight evenly
+    if (taille > 0 && somme_dangling > 0) {
+        proba contribution_dangling = alpha * somme_dangling / taille;
         for (indice i = 0; i < taille; i++) {
-            printf("= %f\n",contribution_dangling);
+            // Remove the debug print that's causing issues
             y[i] += contribution_dangling;
-            
         }
     }
 
-
     // 3. Ajouter la partie téléportation (facteur 1-alpha)
-    proba somme = 0.0;
-    for (indice i = 0; i < taille; i++) somme += x[i];
-    proba teleporte = (1.0 - alpha) * somme / taille;
+    proba teleporte = (1.0 - alpha) / taille;
     for (indice i = 0; i < taille; i++) {
-        y[i] += teleporte;
+        y[i] += teleporte;  // Each node gets equal teleportation probability
+    }
+    
+    // Ensure the sum is 1.0 (optional normalization step)
+    proba sum = 0.0;
+    for (indice i = 0; i < taille; i++) {
+        sum += y[i];
+    }
+    if (sum > 0) {
+        for (indice i = 0; i < taille; i++) {
+            y[i] /= sum;
+        }
     }
 }
 
@@ -171,15 +182,19 @@ void iterer(proba *x, struct elem *p, proba *y, indice taille, indice M){
 
 
 void detecter_dangling_noeuds(struct matrice *matrice, int *est_dangling, indice taille) {
-    for (indice j = 0; j < taille; j++) {
-        int colonne_vide = 1;
-        for (indice i = 0; i < taille; i++) {
+    // Reset all nodes to not dangling
+    for (indice i = 0; i < taille; i++) {
+        est_dangling[i] = 1;  // Assume all are dangling initially
+    }
+    
+    // For each non-zero element, mark its source node as non-dangling
+    for (indice i = 0; i < taille; i++) {
+        for (indice j = 0; j < taille; j++) {
             if (matrice->V[i][j] != 0.0) {
-                colonne_vide = 0;
+                est_dangling[i] = 0;  // Node i has an outgoing link, not dangling
                 break;
             }
         }
-        est_dangling[j] = colonne_vide;
     }
 }
 
