@@ -29,7 +29,7 @@ proba pourcentage_suppression = 0.1; // Pourcentage de suppression des liens
 
 // --- Déclarations de Fonctions ---
 void lire_et_normaliser_mtx(char *nom_fichier);
-void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression);
+void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier);
 void initialiser_vecteurs_pagerank();
 void identifier_noeuds_dangling();
 void iteration_puissance();
@@ -43,7 +43,8 @@ int main() {
 
     char *nom_fichier = "webbase-1M copy.mtx";
 
-    lire_et_normaliser_mtx(nom_fichier);
+    //lire_et_normaliser_mtx(nom_fichier);
+    lire_et_normaliser_mtx_avec_suppression(nom_fichier);
     if (N == 0 || M == 0 || p == NULL) {
         fprintf(stderr, "Erreur lors de la lecture et normalisation de la matrice.\n");
         return 1;
@@ -72,7 +73,7 @@ int main() {
     printf("\nScores de PageRank (premiers 20 ou moins):\n");
     int nb_affichage = (N < 20) ? N : 20;
     for (indice i = 0; i < nb_affichage; i++) {
-        printf("Nœud %d : %.8e\n", i, x[i]); 
+        printf("Noeud %d : %.8e\n", i, x[i]); 
     }
     if (N > nb_affichage) {
         printf("...\n");
@@ -188,12 +189,11 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
 
 }
 
-void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression) {
+void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier) {
     FILE *f;
     char ligne[256];
     int L;
     
-    // Initialisation du générateur de nombres aléatoires
     srand(time(NULL));
     
     f = fopen(nom_fichier, "r");
