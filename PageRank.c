@@ -24,22 +24,25 @@ proba *x = NULL;       // Vecteur PageRank courant
 proba *y = NULL;       // Vecteur PageRank suivant (vecteur de travail)
 int *degre_sortant = NULL; // Stocke le degré sortant de chaque nœud
 
+
+proba pourcentage_suppression = 0.1; // Pourcentage de suppression des liens 
+
 // --- Déclarations de Fonctions ---
 void lire_et_normaliser_mtx(char *nom_fichier);
+void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression);
 void initialiser_vecteurs_pagerank();
 void identifier_noeuds_dangling();
 void iteration_puissance();
 proba norme_L1(proba *v1, proba *v2, indice taille);
 void recopier(proba *dest, proba *src, indice taille);
-void multiplication_pagerank(proba *x_in, proba *y_out);
+void multiplication_pagerank(proba *z, proba *w);
 void liberer_memoire();
 
 // --- Fonction Principale ---
 int main() {
-    // Nom du fichier en dur dans le code
-    char *nom_fichier = "webbase-1M copy.mtx"; // Ou utilisez votre petit fichier d'exemple
 
-    // 1. Lire la matrice, déterminer les dimensions, allouer la structure creuse et normaliser
+    char *nom_fichier = "webbase-1M copy.mtx";
+
     lire_et_normaliser_mtx(nom_fichier);
     if (N == 0 || M == 0 || p == NULL) {
         fprintf(stderr, "Erreur lors de la lecture et normalisation de la matrice.\n");
@@ -47,7 +50,6 @@ int main() {
     }
     printf("Matrice : %d x %d, Éléments non nuls : %d\n", N, N, M);
 
-    // 2. Allouer les vecteurs PageRank
     initialiser_vecteurs_pagerank();
     if (x == NULL || y == NULL) {
         fprintf(stderr, "Erreur d'allocation mémoire pour les vecteurs PageRank.\n");
@@ -55,7 +57,7 @@ int main() {
         return 1;
     }
 
-    // 3. Identifier les nœuds dangling (en utilisant degre_sortant calculé pendant la normalisation)
+
     identifier_noeuds_dangling();
     if (est_dangling == NULL) {
         fprintf(stderr, "Erreur d'allocation mémoire pour est_dangling.\n");
@@ -63,38 +65,38 @@ int main() {
         return 1;
     }
 
-    // 4. Effectuer l'itération de puissance
+
     iteration_puissance();
 
-    // 5. Afficher les résultats (optionnel - peut être très long pour grand N)
+
     printf("\nScores de PageRank (premiers 20 ou moins):\n");
     int nb_affichage = (N < 20) ? N : 20;
     for (indice i = 0; i < nb_affichage; i++) {
-        printf("Nœud %d : %.8e\n", i, x[i]); // Utilise l'index 0-based cohérent avec le code
+        printf("Nœud %d : %.8e\n", i, x[i]); 
     }
     if (N > nb_affichage) {
         printf("...\n");
     }
 
-    // 6. Vérifier la somme (devrait être proche de 1.0)
+
     proba somme = 0.0;
     for (indice i = 0; i < N; i++) {
         somme += x[i];
     }
     printf("Somme du PageRank = %.15f\n", somme);
 
-    // 7. Nettoyer la mémoire allouée
+
     liberer_memoire();
 
     return 0;
 }
 
-// --- Implémentations des Fonctions ---
+
 
 void lire_et_normaliser_mtx(char *nom_fichier) {
     FILE *f;
     char ligne[256];
-    int M_lu; // M lu depuis l'en-tête
+    int L; 
 
     f = fopen(nom_fichier, "r");
     if (f == NULL) {
@@ -102,29 +104,28 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
         exit(1);
     }
 
-    // Ignorer les lignes de commentaire
+
     while (fgets(ligne, sizeof(ligne), f)) {
         if (ligne[0] != '%') {
             break;
         }
     }
 
-    // Lire les dimensions et le nombre d'éléments non nuls de la première ligne non-commentaire
-    if (sscanf(ligne, "%d %*d %d", &N, &M_lu) != 2) {
-         // Gérer les cas où la deuxième dimension peut être manquante ou différente
-         rewind(f); // Revenir au début pour réessayer la lecture après les commentaires
+
+    if (sscanf(ligne, "%d %*d %d", &N, &L) != 2) {
+         rewind(f);
          while (fgets(ligne, sizeof(ligne), f)) {
             if (ligne[0] != '%') {
                 break;
             }
          }
-         if (sscanf(ligne, "%d %d %d", &N, &N, &M_lu) != 3) {
+         if (sscanf(ligne, "%d %d %d", &N, &N, &L) != 3) {
             fprintf(stderr, "Erreur: Impossible de lire les dimensions et le nombre d'éléments depuis l'en-tête.\n");
             fclose(f);
             exit(1);
          }
     }
-    M = M_lu; // Utiliser le nombre de non-zéros lu depuis le fichier
+    M = L; 
 
     if (N <= 0 || M <= 0) {
         fprintf(stderr, "Erreur: Dimensions invalides N=%d, M=%d.\n", N, M);
@@ -132,9 +133,9 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
         exit(1);
     }
 
-    // Allouer la structure creuse et le tableau des degrés sortants
+
     p = malloc(M * sizeof(struct elem));
-    degre_sortant = calloc(N, sizeof(int)); // Initialiser les degrés sortants à 0
+    degre_sortant = calloc(N, sizeof(int)); 
     if (!p || !degre_sortant) {
         fprintf(stderr, "Erreur d'allocation mémoire pour p ou degre_sortant.\n");
         fclose(f);
@@ -142,22 +143,21 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
         return;
     }
 
-    // Lire les triplets et calculer les degrés sortants
     indice m_courant = 0;
     int ligne_elem, col_elem;
-    double val_elem; // Lire comme double
+    double val_elem; 
     while (m_courant < M && fscanf(f, "%d %d %lf", &ligne_elem, &col_elem, &val_elem) == 3) {
-        // Ajuster de l'index 1-based MTX à l'index 0-based C
+
         p[m_courant].i = ligne_elem - 1;
         p[m_courant].j = col_elem - 1;
-        p[m_courant].val = 1.0; // Stocker 1.0 temporairement, sera normalisé plus tard
+        p[m_courant].val = 1.0; 
 
         if (p[m_courant].i < 0 || p[m_courant].i >= N || p[m_courant].j < 0 || p[m_courant].j >= N) {
              fprintf(stderr, "Attention: Index (%d, %d) hors limites [0, %d) lu à l'élément %d.\n",
                      ligne_elem, col_elem, N, m_courant + 1);
-             // Optionnellement ignorer cet élément ou quitter
+
         } else {
-            degre_sortant[p[m_courant].i]++; // Incrémenter le degré sortant pour le nœud source 'i'
+            degre_sortant[p[m_courant].i]++;
         }
         m_courant++;
     }
@@ -165,8 +165,7 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
 
     if (m_courant != M) {
         fprintf(stderr, "Attention: Nombre d'éléments lus (%d) différent de M annoncé (%d).\n", m_courant, M);
-        M = m_courant; // Ajuster M au compte réel lu
-        // Considérer réallouer p si significativement différent, bien que réduire soit OK
+        M = m_courant; 
         struct elem * p_realloc = realloc(p, M * sizeof(struct elem));
         if (M > 0 && p_realloc == NULL){
             fprintf(stderr, "Erreur realloc p.\n");
@@ -176,18 +175,124 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
         p = p_realloc;
     }
 
-    // Normaliser les valeurs dans p
+
     for (indice k = 0; k < M; k++) {
         indice i = p[k].i;
         if (degre_sortant[i] > 0) {
             p[k].val = 1.0 / (proba)degre_sortant[i];
         } else {
-            // Ce cas ne devrait pas se produire pour les éléments réellement dans p,
-            // mais la programmation défensive ne fait pas de mal.
+
             p[k].val = 0.0;
         }
     }
-    // Le tableau degre_sortant est conservé pour identifier les nœuds dangling plus tard
+
+}
+
+void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression) {
+    FILE *f;
+    char ligne[256];
+    int L;
+    
+    // Initialisation du générateur de nombres aléatoires
+    srand(time(NULL));
+    
+    f = fopen(nom_fichier, "r");
+    if (f == NULL) {
+        fprintf(stderr, "Erreur d'ouverture du fichier '%s'\n", nom_fichier);
+        exit(1);
+    }
+
+    // Passer les commentaires
+    while (fgets(ligne, sizeof(ligne), f)) {
+        if (ligne[0] != '%') {
+            break;
+        }
+    }
+
+    // Lire les dimensions
+    if (sscanf(ligne, "%d %*d %d", &N, &L) != 2) {
+         rewind(f);
+         while (fgets(ligne, sizeof(ligne), f)) {
+            if (ligne[0] != '%') {
+                break;
+            }
+         }
+         if (sscanf(ligne, "%d %d %d", &N, &N, &L) != 3) {
+            fprintf(stderr, "Erreur: Impossible de lire les dimensions et le nombre d'éléments depuis l'en-tête.\n");
+            fclose(f);
+            exit(1);
+         }
+    }
+    
+    // Allouer de la mémoire pour stocker tous les éléments lus
+    struct elem *temp_p = malloc(L * sizeof(struct elem));
+    degre_sortant = calloc(N, sizeof(int));
+    if (!temp_p || !degre_sortant) {
+        fprintf(stderr, "Erreur d'allocation mémoire.\n");
+        fclose(f);
+        free(temp_p); free(degre_sortant);
+        temp_p = NULL; degre_sortant = NULL; N=0; M=0;
+        return;
+    }
+
+    // Lire tous les éléments du fichier
+    indice elements_lus = 0;
+    int ligne_elem, col_elem;
+    double val_elem;
+    
+    while (elements_lus < L && fscanf(f, "%d %d %lf", &ligne_elem, &col_elem, &val_elem) == 3) {
+        int i = ligne_elem - 1;
+        int j = col_elem - 1;
+        
+        if (i < 0 || i >= N || j < 0 || j >= N) {
+            fprintf(stderr, "Attention: Index (%d, %d) hors limites [0, %d) lu à l'élément %d.\n",
+                    ligne_elem, col_elem, N, elements_lus + 1);
+        } else {
+            // Décider aléatoirement si on garde cet arc
+            double u = (double)rand() / RAND_MAX;
+            
+            if (u >= pourcentage_suppression) {
+                // On garde l'arc
+                temp_p[elements_lus].i = i;
+                temp_p[elements_lus].j = j;
+                temp_p[elements_lus].val = 1.0;
+                degre_sortant[i]++;
+                elements_lus++;
+            }
+            // Sinon, on saute l'arc (suppression)
+        }
+    }
+    fclose(f);
+    
+    // Mettre à jour M avec le nombre réel d'éléments conservés
+    M = elements_lus;
+    printf("Arcs après suppression aléatoire de %.1f%% : %d (sur %d initialement)\n", 
+           pourcentage_suppression * 100, M, L);
+    
+    // Réallouer p à la taille exacte nécessaire
+    p = malloc(M * sizeof(struct elem));
+    if (!p) {
+        fprintf(stderr, "Erreur d'allocation mémoire pour p.\n");
+        free(temp_p); free(degre_sortant);
+        p = NULL; degre_sortant = NULL; N=0; M=0;
+        return;
+    }
+    
+    // Copier les éléments de temp_p vers p
+    for (indice k = 0; k < M; k++) {
+        p[k] = temp_p[k];
+    }
+    free(temp_p);
+    
+    // Normaliser les valeurs
+    for (indice k = 0; k < M; k++) {
+        indice i = p[k].i;
+        if (degre_sortant[i] > 0) {
+            p[k].val = 1.0 / (proba)degre_sortant[i];
+        } else {
+            p[k].val = 0.0;
+        }
+    }
 }
 
 void initialiser_vecteurs_pagerank() {
@@ -204,24 +309,24 @@ void initialiser_vecteurs_pagerank() {
 }
 
 void identifier_noeuds_dangling() {
-    est_dangling = malloc(N * sizeof(int)); // Utiliser int (0 ou 1)
+    est_dangling = malloc(N * sizeof(int)); 
     if (!est_dangling) {
-        free(degre_sortant); degre_sortant = NULL; // Libérer degre_sortant si dangling échoue
+        free(degre_sortant); degre_sortant = NULL;
         return;
     }
     for (indice i = 0; i < N; i++) {
         est_dangling[i] = (degre_sortant[i] == 0);
     }
-    // Nous n'avons plus besoin de degre_sortant après cela
+
     free(degre_sortant);
     degre_sortant = NULL;
 }
 
-// Norme L1: somme(abs(v1[i] - v2[i]))
+// Norme L1: somme(|v1[i] - v2[i]|)
 proba norme_L1(proba *v1, proba *v2, indice taille) {
     proba somme = 0.0;
     for (indice i = 0; i < taille; i++) {
-        somme += fabs(v1[i] - v2[i]); // Utiliser fabs pour double
+        somme += fabs(v1[i] - v2[i]); 
     }
     return somme;
 }
@@ -232,33 +337,25 @@ void recopier(proba *dest, proba *src, indice taille) {
     }
 }
 
-// Effectue une étape: y_out = alpha * P * x_in + contrib_dangling + contrib_teleport
-void multiplication_pagerank(proba *x_in, proba *y_out) {
-    // Initialiser y_out à zéro
+// Effectue une étape: w = alpha * P * z + contrib_dangling + contrib_teleport
+void multiplication_pagerank(proba *z, proba *w) {
+
     for (indice i = 0; i < N; i++) {
-        y_out[i] = 0.0;
+        w[i] = 0.0;
     }
 
-    // 1. Calculer les contributions de base des nœuds non-dangling (partie P*x)
-    //    y_j = somme_{i liens vers j} (x_i / degre_sortant(i))
     for (indice k = 0; k < M; k++) {
-        // p[k].val contient déjà 1.0 / degre_sortant(p[k].i)
-        y_out[p[k].j] += x_in[p[k].i] * p[k].val;
+
+        w[p[k].j] += z[p[k].i] * p[k].val;
     }
 
-    // 2. Calculer la contribution des nœuds dangling
     proba somme_dangling = 0.0;
     for (indice i = 0; i < N; i++) {
         if (est_dangling[i]) {
-            somme_dangling += x_in[i];
+            somme_dangling += z[i];
         }
     }
 
-    // 3. Combiner alpha, dangling, et téléportation
-    //    La formulation Google: y = alpha * (P*x + dist_dangling) + (1-alpha)/N
-    //    Soit P*x la somme calculée à l'étape 1.
-    //    Soit dist_dangling = (somme(x_dangling)/N) ajoutée à chaque élément.
-    //    Donc, y_out[i] = alpha * (y_out[i] + somme_dangling / N) + (1 - alpha) / N
 
     proba dist_dangling_par_noeud = 0.0;
     if (N > 0) {
@@ -267,40 +364,33 @@ void multiplication_pagerank(proba *x_in, proba *y_out) {
     proba teleport_par_noeud = (1.0 - alpha) / (proba)N;
 
     for (indice i = 0; i < N; i++) {
-        y_out[i] = alpha * (y_out[i] + dist_dangling_par_noeud) + teleport_par_noeud;
+        w[i] = alpha * (w[i] + dist_dangling_par_noeud) + teleport_par_noeud;
     }
 
-    // Optionnel: Rescaler y_out pour qu'il somme à 1.0 (aide à contrer la dérive en virgule flottante)
-    // proba somme_courante = 0.0;
-    // for (indice i = 0; i < N; i++) somme_courante += y_out[i];
-    // if (somme_courante != 0.0) { // Éviter division par zéro si quelque chose a très mal tourné
-    //     proba echelle = 1.0 / somme_courante;
-    //     for (indice i = 0; i < N; i++) y_out[i] *= echelle;
-    // }
-    // Note: Avec la formulation Google ci-dessus, la somme devrait théoriquement rester 1.
+
 }
 
 void iteration_puissance() {
     indice k = 0;
-    proba diff = 1.0; // Différence initiale > sigma
+    proba diff = 1.0; 
     struct timeval t1, t2;
 
     gettimeofday(&t1, NULL);
 
     while (diff > sigma) {
         k++;
-        multiplication_pagerank(x, y);      // Calculer y basé sur x
-        diff = norme_L1(x, y, N);         // Calculer la différence ||x - y||_1
-        recopier(x, y, N);                // Copier y vers x pour la prochaine itération
+        multiplication_pagerank(x, y);      
+        diff = norme_L1(x, y, N);         
+        recopier(x, y, N);                
 
-        if (k % 10 == 0) { // Afficher la progression occasionnellement
+        if (k % 10 == 0) { 
              printf("Itération %d, Diff = %e\n", k, diff);
         }
-         if (k > 10000) { // Ajouter une sécurité pour les exécutions très longues
+         if (k > 10000) { 
              printf("Attention: Dépassement de 10000 itérations.\n");
              break;
          }
-         // Vérifier NaN ou Inf
+
          if (isnan(diff) || isinf(diff)) {
              fprintf(stderr, "Erreur: Convergence échouée (NaN ou Inf détecté) à l'itération %d.\n", k);
              break;
@@ -316,9 +406,8 @@ void liberer_memoire() {
     free(x);
     free(y);
     free(p);
-    free(est_dangling); // Note: degre_sortant est libéré plus tôt
+    free(est_dangling); 
 
-    // Assigner NULL séparément
     x = NULL;
     y = NULL;
     p = NULL;
