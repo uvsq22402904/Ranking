@@ -10,7 +10,7 @@ typedef int indice;
 indice N = 0; // Nombre de nœuds (lignes/colonnes)
 indice M = 0; // Nombre d'éléments non nuls (liens)
 proba alpha[] = {0.85, 0.90, 0.95, 0.99};  // Facteur de téléportation
-proba pourcentage_suppression[] = {0.1, 0.2}; // Pourcentage de suppression des liens 
+proba pourcentage_suppression[] = {0.0, 0.1, 0.2}; // Pourcentage de suppression des liens 
 proba sigma = 1e-9; // Critère de convergence (epsilon) - plus strict pour double
 int *est_dangling = NULL; // Tableau booléen : 1 si le nœud est un dangling node
 
@@ -30,10 +30,16 @@ int *degre_sortant = NULL; // Stocke le degré sortant de chaque nœud
 
 // --- Déclarations de Fonctions ---
 void lire_et_normaliser_mtx(char *nom_fichier);
+
+
+
 void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression);
+
+
+
 void initialiser_vecteurs_pagerank();
 void identifier_noeuds_dangling();
-void iteration_puissance();
+void iteration_puissance(proba alpha);
 proba norme_L1(proba *v1, proba *v2, indice taille);
 void recopier(proba *dest, proba *src, indice taille);
 void multiplication_pagerank(proba *z, proba *w, proba alpha);
@@ -44,51 +50,56 @@ int main() {
 
     char *nom_fichier = "webbase-1M copy.mtx";
 
-    //lire_et_normaliser_mtx(nom_fichier);
-    lire_et_normaliser_mtx_avec_suppression(nom_fichier,pourcentage_suppression[0]);
-    if (N == 0 || M == 0 || p == NULL) {
-        fprintf(stderr, "Erreur lors de la lecture et normalisation de la matrice.\n");
-        return 1;
+    int nb_suppressions = sizeof(pourcentage_suppression) / sizeof(pourcentage_suppression[0]);
+    int nb_alphas = sizeof(alpha) / sizeof(alpha[0]);
+    
+    for (int i = 0; i < nb_suppressions; i++) {
+        for (int j = 0; j < nb_alphas; j++) {
+
+            printf("\n==> Suppression: %.2f, Alpha: %.2f\n", pourcentage_suppression[i], alpha[j]);
+
+            lire_et_normaliser_mtx_avec_suppression(nom_fichier, pourcentage_suppression[i]);
+            if (N == 0 || M == 0 || p == NULL) {
+                fprintf(stderr, "Erreur lors de la lecture et normalisation de la matrice.\n");
+                continue;
+            }
+
+            printf("Matrice : %d x %d, Éléments non nuls : %d\n", N, N, M);
+
+            initialiser_vecteurs_pagerank();
+            if (x == NULL || y == NULL) {
+                fprintf(stderr, "Erreur d'allocation mémoire pour les vecteurs PageRank.\n");
+                liberer_memoire();
+                continue;
+            }
+
+            identifier_noeuds_dangling();
+            if (est_dangling == NULL) {
+                fprintf(stderr, "Erreur d'allocation mémoire pour est_dangling.\n");
+                liberer_memoire();
+                continue;
+            }
+
+            iteration_puissance(alpha[j]);
+
+            printf("\nScores de PageRank (premiers 20 ou moins):\n");
+            int nb_affichage = (N < 20) ? N : 20;
+            for (indice k = 0; k < nb_affichage; k++) {
+                printf("Noeud %d : %.8e\n", k, x[k]); 
+            }
+            if (N > nb_affichage) {
+                printf("...\n");
+            }
+
+            proba somme = 0.0;
+            for (indice k = 0; k < N; k++) {
+                somme += x[k];
+            }
+            printf("Somme du PageRank = %.15f\n", somme);
+
+            liberer_memoire();  
+        }
     }
-    printf("Matrice : %d x %d, Éléments non nuls : %d\n", N, N, M);
-
-    initialiser_vecteurs_pagerank();
-    if (x == NULL || y == NULL) {
-        fprintf(stderr, "Erreur d'allocation mémoire pour les vecteurs PageRank.\n");
-        liberer_memoire();
-        return 1;
-    }
-
-
-    identifier_noeuds_dangling();
-    if (est_dangling == NULL) {
-        fprintf(stderr, "Erreur d'allocation mémoire pour est_dangling.\n");
-        liberer_memoire();
-        return 1;
-    }
-
-
-    iteration_puissance();
-
-
-    printf("\nScores de PageRank (premiers 20 ou moins):\n");
-    int nb_affichage = (N < 20) ? N : 20;
-    for (indice i = 0; i < nb_affichage; i++) {
-        printf("Noeud %d : %.8e\n", i, x[i]); 
-    }
-    if (N > nb_affichage) {
-        printf("...\n");
-    }
-
-
-    proba somme = 0.0;
-    for (indice i = 0; i < N; i++) {
-        somme += x[i];
-    }
-    printf("Somme du PageRank = %.15f\n", somme);
-
-
-    liberer_memoire();
 
     return 0;
 }
@@ -371,7 +382,7 @@ void multiplication_pagerank(proba *z, proba *w, proba alpha) {
 
 }
 
-void iteration_puissance() {
+void iteration_puissance(proba alpha) {
     indice k = 0;
     proba diff = 1.0; 
     struct timeval t1, t2;
@@ -380,7 +391,7 @@ void iteration_puissance() {
 
     while (diff > sigma) {
         k++;
-        multiplication_pagerank(x, y, alpha[0]);
+        multiplication_pagerank(x, y, alpha);
         diff = norme_L1(x, y, N);         
         recopier(x, y, N);                
 
