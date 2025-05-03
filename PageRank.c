@@ -9,7 +9,8 @@ typedef int indice;
 
 indice N = 0; // Nombre de nœuds (lignes/colonnes)
 indice M = 0; // Nombre d'éléments non nuls (liens)
-proba alpha = 0.85;  // Facteur de téléportation
+proba alpha[] = {0.85, 0.90, 0.95, 0.99, 0.999};  // Facteur de téléportation
+proba pourcentage_suppression[] = 0.1; // Pourcentage de suppression des liens 
 proba sigma = 1e-9; // Critère de convergence (epsilon) - plus strict pour double
 int *est_dangling = NULL; // Tableau booléen : 1 si le nœud est un dangling node
 
@@ -25,7 +26,7 @@ proba *y = NULL;       // Vecteur PageRank suivant (vecteur de travail)
 int *degre_sortant = NULL; // Stocke le degré sortant de chaque nœud
 
 
-proba pourcentage_suppression = 0.1; // Pourcentage de suppression des liens 
+
 
 // --- Déclarations de Fonctions ---
 void lire_et_normaliser_mtx(char *nom_fichier);
