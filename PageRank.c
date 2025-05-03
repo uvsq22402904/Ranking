@@ -9,8 +9,8 @@ typedef int indice;
 
 indice N = 0; // Nombre de nœuds (lignes/colonnes)
 indice M = 0; // Nombre d'éléments non nuls (liens)
-proba alpha[] = {0.85, 0.90, 0.95, 0.99, 0.999};  // Facteur de téléportation
-proba pourcentage_suppression[] = 0.1; // Pourcentage de suppression des liens 
+proba alpha[] = {0.85, 0.90, 0.95, 0.99};  // Facteur de téléportation
+proba pourcentage_suppression[] = {0.1, 0.2}; // Pourcentage de suppression des liens 
 proba sigma = 1e-9; // Critère de convergence (epsilon) - plus strict pour double
 int *est_dangling = NULL; // Tableau booléen : 1 si le nœud est un dangling node
 
@@ -30,13 +30,13 @@ int *degre_sortant = NULL; // Stocke le degré sortant de chaque nœud
 
 // --- Déclarations de Fonctions ---
 void lire_et_normaliser_mtx(char *nom_fichier);
-void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier);
+void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression);
 void initialiser_vecteurs_pagerank();
 void identifier_noeuds_dangling();
 void iteration_puissance();
 proba norme_L1(proba *v1, proba *v2, indice taille);
 void recopier(proba *dest, proba *src, indice taille);
-void multiplication_pagerank(proba *z, proba *w);
+void multiplication_pagerank(proba *z, proba *w, proba alpha);
 void liberer_memoire();
 
 // --- Fonction Principale ---
@@ -45,7 +45,7 @@ int main() {
     char *nom_fichier = "webbase-1M copy.mtx";
 
     //lire_et_normaliser_mtx(nom_fichier);
-    lire_et_normaliser_mtx_avec_suppression(nom_fichier);
+    lire_et_normaliser_mtx_avec_suppression(nom_fichier,pourcentage_suppression[0]);
     if (N == 0 || M == 0 || p == NULL) {
         fprintf(stderr, "Erreur lors de la lecture et normalisation de la matrice.\n");
         return 1;
@@ -190,7 +190,7 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
 
 }
 
-void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier) {
+void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression) {
     FILE *f;
     char ligne[256];
     int L;
@@ -339,7 +339,7 @@ void recopier(proba *dest, proba *src, indice taille) {
 }
 
 // Effectue une étape: w = alpha * P * z + contrib_dangling + contrib_teleport
-void multiplication_pagerank(proba *z, proba *w) {
+void multiplication_pagerank(proba *z, proba *w, proba alpha) {
 
     for (indice i = 0; i < N; i++) {
         w[i] = 0.0;
@@ -380,7 +380,7 @@ void iteration_puissance() {
 
     while (diff > sigma) {
         k++;
-        multiplication_pagerank(x, y);      
+        multiplication_pagerank(x, y, alpha[0]);
         diff = norme_L1(x, y, N);         
         recopier(x, y, N);                
 
