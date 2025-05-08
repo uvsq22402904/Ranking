@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Charger les données
-data = pd.read_csv("webbase-1M_resultats.csv")
+data = pd.read_csv("wikipedia-20051105_resultats.csv")
 
 # Créer une figure avec deux sous-graphiques
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
@@ -33,7 +33,7 @@ ax2.grid(True)
 plt.tight_layout()
 
 # Sauvegarder le graphique
-plt.savefig('analyse_webbase-1M.png')
+plt.savefig('analyse_wikipedia-20051105.png')
 
 # Afficher le graphique (optionnel, commentez si vous ne voulez pas d'affichage)
 # plt.show()

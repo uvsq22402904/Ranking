@@ -1,0 +1,786 @@
+
+==> Suppression: 0.00, Alpha: 0.85
+Arcs après suppression aléatoire de 0.0% : 19753078 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 19753078
+Itération 10, Diff = 4.242122e-03
+Itération 20, Diff = 8.870730e-05
+Itération 30, Diff = 3.760546e-06
+Itération 40, Diff = 2.491008e-07
+Itération 50, Diff = 2.532285e-08
+Itération 60, Diff = 3.720885e-09
+Convergence en 68 itérations (Diff = 9.188015e-10), temps total = 37.9932 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 1.00894400e-07
+Noeud 1 : 1.00894400e-07
+Noeud 2 : 1.00894400e-07
+Noeud 3 : 1.00894400e-07
+Noeud 4 : 1.00894400e-07
+Noeud 5 : 1.00894400e-07
+Noeud 6 : 1.00894400e-07
+Noeud 7 : 4.22222594e-05
+Noeud 8 : 1.00894400e-07
+Noeud 9 : 1.00894400e-07
+Noeud 10 : 1.00894400e-07
+Noeud 11 : 1.00894400e-07
+Noeud 12 : 1.00894400e-07
+Noeud 13 : 1.00894400e-07
+Noeud 14 : 1.00894400e-07
+Noeud 15 : 1.00894400e-07
+Noeud 16 : 1.00894400e-07
+Noeud 17 : 1.00894400e-07
+Noeud 18 : 1.00894400e-07
+Noeud 19 : 1.10186551e-05
+...
+Somme du PageRank = 0.999999999976655
+
+==> Suppression: 0.00, Alpha: 0.90
+Arcs après suppression aléatoire de 0.0% : 19753078 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 19753078
+Itération 10, Diff = 7.513097e-03
+Itération 20, Diff = 2.782473e-04
+Itération 30, Diff = 2.089096e-05
+Itération 40, Diff = 2.450860e-06
+Itération 50, Diff = 4.412571e-07
+Itération 60, Diff = 1.148312e-07
+Itération 70, Diff = 3.572525e-08
+Itération 80, Diff = 1.179315e-08
+Itération 90, Diff = 3.982686e-09
+Itération 100, Diff = 1.363132e-09
+Convergence en 103 itérations (Diff = 9.900856e-10), temps total = 74.7434 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 6.99236526e-08
+Noeud 1 : 6.99236526e-08
+Noeud 2 : 6.99236526e-08
+Noeud 3 : 6.99236526e-08
+Noeud 4 : 6.99236526e-08
+Noeud 5 : 6.99236526e-08
+Noeud 6 : 6.99236526e-08
+Noeud 7 : 4.72872702e-05
+Noeud 8 : 6.99236526e-08
+Noeud 9 : 6.99236526e-08
+Noeud 10 : 6.99236526e-08
+Noeud 11 : 6.99236526e-08
+Noeud 12 : 6.99236526e-08
+Noeud 13 : 6.99236526e-08
+Noeud 14 : 6.99236526e-08
+Noeud 15 : 6.99236526e-08
+Noeud 16 : 6.99236526e-08
+Noeud 17 : 6.99236526e-08
+Noeud 18 : 6.99236526e-08
+Noeud 19 : 1.11779312e-05
+...
+Somme du PageRank = 1.000000000003829
+
+==> Suppression: 0.00, Alpha: 0.95
+Arcs après suppression aléatoire de 0.0% : 19753078 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 19753078
+Itération 10, Diff = 1.290119e-02
+Itération 20, Diff = 8.204515e-04
+Itération 30, Diff = 1.057770e-04
+Itération 40, Diff = 2.130896e-05
+Itération 50, Diff = 6.587892e-06
+Itération 60, Diff = 2.943918e-06
+Itération 70, Diff = 1.572722e-06
+Itération 80, Diff = 8.914919e-07
+Itération 90, Diff = 5.169814e-07
+Itération 100, Diff = 3.038408e-07
+Itération 110, Diff = 1.799611e-07
+Itération 120, Diff = 1.070656e-07
+Itération 130, Diff = 6.386214e-08
+Itération 140, Diff = 3.814999e-08
+Itération 150, Diff = 2.281045e-08
+Itération 160, Diff = 1.364597e-08
+Itération 170, Diff = 8.166009e-09
+Itération 180, Diff = 4.887590e-09
+Itération 190, Diff = 2.925657e-09
+Itération 200, Diff = 1.751417e-09
+Itération 210, Diff = 1.048495e-09
+Convergence en 211 itérations (Diff = 9.960448e-10), temps total = 208.2369 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 3.88465987e-08
+Noeud 1 : 3.88465987e-08
+Noeud 2 : 3.88465987e-08
+Noeud 3 : 3.88465987e-08
+Noeud 4 : 3.88465987e-08
+Noeud 5 : 3.88465987e-08
+Noeud 6 : 3.88465987e-08
+Noeud 7 : 5.33119761e-05
+Noeud 8 : 3.88465987e-08
+Noeud 9 : 3.88465987e-08
+Noeud 10 : 3.88465987e-08
+Noeud 11 : 3.88465987e-08
+Noeud 12 : 3.88465987e-08
+Noeud 13 : 3.88465987e-08
+Noeud 14 : 3.88465987e-08
+Noeud 15 : 3.88465987e-08
+Noeud 16 : 3.88465987e-08
+Noeud 17 : 3.88465987e-08
+Noeud 18 : 3.88465987e-08
+Noeud 19 : 1.14282458e-05
+...
+Somme du PageRank = 0.999999999993654
+
+==> Suppression: 0.00, Alpha: 0.99
+Arcs après suppression aléatoire de 0.0% : 19753078 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 19753078
+Itération 10, Diff = 1.948704e-02
+Itération 20, Diff = 1.871909e-03
+Itération 30, Diff = 3.645348e-04
+Itération 40, Diff = 1.109241e-04
+Itération 50, Diff = 5.179955e-05
+Itération 60, Diff = 3.496400e-05
+Itération 70, Diff = 2.821391e-05
+Itération 80, Diff = 2.415709e-05
+Itération 90, Diff = 2.116011e-05
+Itération 100, Diff = 1.878474e-05
+Itération 110, Diff = 1.680558e-05
+Itération 120, Diff = 1.510221e-05
+Itération 130, Diff = 1.360661e-05
+Itération 140, Diff = 1.227769e-05
+Itération 150, Diff = 1.108849e-05
+Itération 160, Diff = 1.001980e-05
+Itération 170, Diff = 9.056905e-06
+Itération 180, Diff = 8.188033e-06
+Itération 190, Diff = 7.403335e-06
+Itération 200, Diff = 6.694283e-06
+Itération 210, Diff = 6.053378e-06
+Itération 220, Diff = 5.473958e-06
+Itération 230, Diff = 4.950066e-06
+Itération 240, Diff = 4.476347e-06
+Itération 250, Diff = 4.047979e-06
+Itération 260, Diff = 3.660620e-06
+Itération 270, Diff = 3.310336e-06
+Itération 280, Diff = 2.993570e-06
+Itération 290, Diff = 2.707116e-06
+Itération 300, Diff = 2.448073e-06
+Itération 310, Diff = 2.213817e-06
+Itération 320, Diff = 2.001978e-06
+Itération 330, Diff = 1.810409e-06
+Itération 340, Diff = 1.637171e-06
+Itération 350, Diff = 1.480511e-06
+Itération 360, Diff = 1.338841e-06
+Itération 370, Diff = 1.210728e-06
+Itération 380, Diff = 1.094873e-06
+Itération 390, Diff = 9.901053e-07
+Itération 400, Diff = 8.953622e-07
+Itération 410, Diff = 8.096853e-07
+Itération 420, Diff = 7.322068e-07
+Itération 430, Diff = 6.621420e-07
+Itération 440, Diff = 5.987818e-07
+Itération 450, Diff = 5.414846e-07
+Itération 460, Diff = 4.896700e-07
+Itération 470, Diff = 4.428137e-07
+Itération 480, Diff = 4.004410e-07
+Itération 490, Diff = 3.621229e-07
+Itération 500, Diff = 3.274714e-07
+Itération 510, Diff = 2.961358e-07
+Itération 520, Diff = 2.677986e-07
+Itération 530, Diff = 2.421731e-07
+Itération 540, Diff = 2.189996e-07
+Itération 550, Diff = 1.980436e-07
+Itération 560, Diff = 1.790929e-07
+Itération 570, Diff = 1.619556e-07
+Itération 580, Diff = 1.464581e-07
+Itération 590, Diff = 1.324435e-07
+Itération 600, Diff = 1.197701e-07
+Itération 610, Diff = 1.083093e-07
+Itération 620, Diff = 9.794522e-08
+Itération 630, Diff = 8.857291e-08
+Itération 640, Diff = 8.009737e-08
+Itération 650, Diff = 7.243292e-08
+Itération 660, Diff = 6.550182e-08
+Itération 670, Diff = 5.923397e-08
+Itération 680, Diff = 5.356589e-08
+Itération 690, Diff = 4.844020e-08
+Itération 700, Diff = 4.380498e-08
+Itération 710, Diff = 3.961331e-08
+Itération 720, Diff = 3.582270e-08
+Itération 730, Diff = 3.239486e-08
+Itération 740, Diff = 2.929501e-08
+Itération 750, Diff = 2.649180e-08
+Itération 760, Diff = 2.395680e-08
+Itération 770, Diff = 2.166439e-08
+Itération 780, Diff = 1.959134e-08
+Itération 790, Diff = 1.771665e-08
+Itération 800, Diff = 1.602134e-08
+Itération 810, Diff = 1.448826e-08
+Itération 820, Diff = 1.310187e-08
+Itération 830, Diff = 1.184818e-08
+Itération 840, Diff = 1.071444e-08
+Itération 850, Diff = 9.689152e-09
+Itération 860, Diff = 8.762028e-09
+Itération 870, Diff = 7.923603e-09
+Itération 880, Diff = 7.165378e-09
+Itération 890, Diff = 6.479719e-09
+Itération 900, Diff = 5.859692e-09
+Itération 910, Diff = 5.298976e-09
+Itération 920, Diff = 4.791910e-09
+Itération 930, Diff = 4.333378e-09
+Itération 940, Diff = 3.918710e-09
+Itération 950, Diff = 3.543757e-09
+Itération 960, Diff = 3.204636e-09
+Itération 970, Diff = 2.898008e-09
+Itération 980, Diff = 2.620682e-09
+Itération 990, Diff = 2.369898e-09
+Itération 1000, Diff = 2.143153e-09
+Itération 1010, Diff = 1.938067e-09
+Itération 1020, Diff = 1.752623e-09
+Itération 1030, Diff = 1.584895e-09
+Itération 1040, Diff = 1.433258e-09
+Itération 1050, Diff = 1.296086e-09
+Itération 1060, Diff = 1.172066e-09
+Itération 1070, Diff = 1.059935e-09
+Convergence en 1076 itérations (Diff = 9.978567e-10), temps total = 917.3857 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 1.39072054e-08
+Noeud 1 : 1.39072054e-08
+Noeud 2 : 1.39072054e-08
+Noeud 3 : 1.39072054e-08
+Noeud 4 : 1.39072054e-08
+Noeud 5 : 1.39072054e-08
+Noeud 6 : 1.39072054e-08
+Noeud 7 : 5.88094219e-05
+Noeud 8 : 1.39072054e-08
+Noeud 9 : 1.39072054e-08
+Noeud 10 : 1.39072054e-08
+Noeud 11 : 1.39072054e-08
+Noeud 12 : 1.39072054e-08
+Noeud 13 : 1.39072054e-08
+Noeud 14 : 1.39072054e-08
+Noeud 15 : 1.39072054e-08
+Noeud 16 : 1.39072054e-08
+Noeud 17 : 1.39072054e-08
+Noeud 18 : 1.39072054e-08
+Noeud 19 : 1.18022025e-05
+...
+Somme du PageRank = 1.000000000009113
+
+==> Suppression: 0.10, Alpha: 0.85
+Arcs après suppression aléatoire de 10.0% : 17777538 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 17777538
+Itération 10, Diff = 3.662095e-03
+Itération 20, Diff = 6.507013e-05
+Itération 30, Diff = 2.555037e-06
+Itération 40, Diff = 1.786357e-07
+Itération 50, Diff = 2.319398e-08
+Itération 60, Diff = 4.198887e-09
+Convergence en 69 itérations (Diff = 9.596925e-10), temps total = 49.6739 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 1.10333209e-07
+Noeud 1 : 1.10333209e-07
+Noeud 2 : 1.10333209e-07
+Noeud 3 : 1.10333209e-07
+Noeud 4 : 1.10333209e-07
+Noeud 5 : 1.10333209e-07
+Noeud 6 : 1.10333209e-07
+Noeud 7 : 4.13879203e-05
+Noeud 8 : 1.10333209e-07
+Noeud 9 : 1.10333209e-07
+Noeud 10 : 1.10333209e-07
+Noeud 11 : 1.10333209e-07
+Noeud 12 : 1.10333209e-07
+Noeud 13 : 1.10333209e-07
+Noeud 14 : 1.10333209e-07
+Noeud 15 : 1.10333209e-07
+Noeud 16 : 1.10333209e-07
+Noeud 17 : 1.10333209e-07
+Noeud 18 : 1.10333209e-07
+Noeud 19 : 1.05771095e-05
+...
+Somme du PageRank = 0.999999999976512
+
+==> Suppression: 0.10, Alpha: 0.90
+Arcs après suppression aléatoire de 10.0% : 17776501 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 17776501
+Itération 10, Diff = 6.484098e-03
+Itération 20, Diff = 1.866955e-04
+Itération 30, Diff = 1.234794e-05
+Itération 40, Diff = 1.361597e-06
+Itération 50, Diff = 2.858000e-07
+Itération 60, Diff = 9.000371e-08
+Itération 70, Diff = 3.097416e-08
+Itération 80, Diff = 1.075803e-08
+Itération 90, Diff = 3.745303e-09
+Itération 100, Diff = 1.305033e-09
+Convergence en 103 itérations (Diff = 9.512242e-10), temps total = 76.7969 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 7.93447740e-08
+Noeud 1 : 7.93447740e-08
+Noeud 2 : 7.93447740e-08
+Noeud 3 : 7.93447740e-08
+Noeud 4 : 7.93447740e-08
+Noeud 5 : 7.93447740e-08
+Noeud 6 : 7.93447740e-08
+Noeud 7 : 4.58433279e-05
+Noeud 8 : 7.93447740e-08
+Noeud 9 : 7.93447740e-08
+Noeud 10 : 7.93447740e-08
+Noeud 11 : 7.93447740e-08
+Noeud 12 : 7.93447740e-08
+Noeud 13 : 7.93447740e-08
+Noeud 14 : 7.93447740e-08
+Noeud 15 : 7.93447740e-08
+Noeud 16 : 7.93447740e-08
+Noeud 17 : 7.93447740e-08
+Noeud 18 : 7.93447740e-08
+Noeud 19 : 1.03145754e-05
+...
+Somme du PageRank = 0.999999999990214
+
+==> Suppression: 0.10, Alpha: 0.95
+Arcs après suppression aléatoire de 10.0% : 17777543 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 17777543
+Itération 10, Diff = 1.153165e-02
+Itération 20, Diff = 6.059782e-04
+Itération 30, Diff = 7.271307e-05
+Itération 40, Diff = 1.559958e-05
+Itération 50, Diff = 6.104713e-06
+Itération 60, Diff = 3.357321e-06
+Itération 70, Diff = 1.982543e-06
+Itération 80, Diff = 1.181078e-06
+Itération 90, Diff = 7.056887e-07
+Itération 100, Diff = 4.221412e-07
+Itération 110, Diff = 2.526428e-07
+Itération 120, Diff = 1.512308e-07
+Itération 130, Diff = 9.053325e-08
+Itération 140, Diff = 5.419887e-08
+Itération 150, Diff = 3.244724e-08
+Itération 160, Diff = 1.942532e-08
+Itération 170, Diff = 1.162936e-08
+Itération 180, Diff = 6.962221e-09
+Itération 190, Diff = 4.168114e-09
+Itération 200, Diff = 2.495243e-09
+Itération 210, Diff = 1.493934e-09
+Convergence en 218 itérations (Diff = 9.910221e-10), temps total = 168.7777 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 4.77322462e-08
+Noeud 1 : 4.77322462e-08
+Noeud 2 : 4.77322462e-08
+Noeud 3 : 4.77322462e-08
+Noeud 4 : 4.77322462e-08
+Noeud 5 : 4.77322462e-08
+Noeud 6 : 4.77322462e-08
+Noeud 7 : 5.28110662e-05
+Noeud 8 : 4.77322462e-08
+Noeud 9 : 4.77322462e-08
+Noeud 10 : 4.77322462e-08
+Noeud 11 : 4.77322462e-08
+Noeud 12 : 4.77322462e-08
+Noeud 13 : 4.77322462e-08
+Noeud 14 : 4.77322462e-08
+Noeud 15 : 4.77322462e-08
+Noeud 16 : 4.77322462e-08
+Noeud 17 : 4.77322462e-08
+Noeud 18 : 4.77322462e-08
+Noeud 19 : 1.17993446e-05
+...
+Somme du PageRank = 1.000000000016394
+
+==> Suppression: 0.10, Alpha: 0.99
+Arcs après suppression aléatoire de 10.0% : 17777208 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 17777208
+Itération 10, Diff = 1.635329e-02
+Itération 20, Diff = 1.255218e-03
+Itération 30, Diff = 2.128867e-04
+Itération 40, Diff = 6.203450e-05
+Itération 50, Diff = 3.554178e-05
+Itération 60, Diff = 2.954778e-05
+Itération 70, Diff = 2.648285e-05
+Itération 80, Diff = 2.388731e-05
+Itération 90, Diff = 2.158228e-05
+Itération 100, Diff = 1.951065e-05
+Itération 110, Diff = 1.764122e-05
+Itération 120, Diff = 1.595200e-05
+Itération 130, Diff = 1.442475e-05
+Itération 140, Diff = 1.304372e-05
+Itération 150, Diff = 1.179492e-05
+Itération 160, Diff = 1.066568e-05
+Itération 170, Diff = 9.644551e-06
+Itération 180, Diff = 8.721185e-06
+Itération 190, Diff = 7.886222e-06
+Itération 200, Diff = 7.131197e-06
+Itération 210, Diff = 6.448459e-06
+Itération 220, Diff = 5.831086e-06
+Itération 230, Diff = 5.272820e-06
+Itération 240, Diff = 4.768002e-06
+Itération 250, Diff = 4.311515e-06
+Itération 260, Diff = 3.898732e-06
+Itération 270, Diff = 3.525469e-06
+Itération 280, Diff = 3.187942e-06
+Itération 290, Diff = 2.882730e-06
+Itération 300, Diff = 2.606738e-06
+Itération 310, Diff = 2.357171e-06
+Itération 320, Diff = 2.131496e-06
+Itération 330, Diff = 1.927427e-06
+Itération 340, Diff = 1.742896e-06
+Itération 350, Diff = 1.576032e-06
+Itération 360, Diff = 1.425143e-06
+Itération 370, Diff = 1.288701e-06
+Itération 380, Diff = 1.165321e-06
+Itération 390, Diff = 1.053754e-06
+Itération 400, Diff = 9.528682e-07
+Itération 410, Diff = 8.616409e-07
+Itération 420, Diff = 7.791479e-07
+Itération 430, Diff = 7.045527e-07
+Itération 440, Diff = 6.370992e-07
+Itération 450, Diff = 5.761037e-07
+Itération 460, Diff = 5.209478e-07
+Itération 470, Diff = 4.710724e-07
+Itération 480, Diff = 4.259724e-07
+Itération 490, Diff = 3.851900e-07
+Itération 500, Diff = 3.483120e-07
+Itération 510, Diff = 3.149648e-07
+Itération 520, Diff = 2.848104e-07
+Itération 530, Diff = 2.575426e-07
+Itération 540, Diff = 2.328858e-07
+Itération 550, Diff = 2.105895e-07
+Itération 560, Diff = 1.904278e-07
+Itération 570, Diff = 1.721963e-07
+Itération 580, Diff = 1.557104e-07
+Itération 590, Diff = 1.408027e-07
+Itération 600, Diff = 1.273223e-07
+Itération 610, Diff = 1.151326e-07
+Itération 620, Diff = 1.041098e-07
+Itération 630, Diff = 9.414245e-08
+Itération 640, Diff = 8.512926e-08
+Itération 650, Diff = 7.697902e-08
+Itération 660, Diff = 6.960909e-08
+Itération 670, Diff = 6.294476e-08
+Itération 680, Diff = 5.691856e-08
+Itération 690, Diff = 5.146914e-08
+Itération 700, Diff = 4.654161e-08
+Itération 710, Diff = 4.208577e-08
+Itération 720, Diff = 3.805640e-08
+Itération 730, Diff = 3.441289e-08
+Itération 740, Diff = 3.111836e-08
+Itération 750, Diff = 2.813898e-08
+Itération 760, Diff = 2.544501e-08
+Itération 770, Diff = 2.300894e-08
+Itération 780, Diff = 2.080615e-08
+Itération 790, Diff = 1.881410e-08
+Itération 800, Diff = 1.701284e-08
+Itération 810, Diff = 1.538402e-08
+Itération 820, Diff = 1.391115e-08
+Itération 830, Diff = 1.257930e-08
+Itération 840, Diff = 1.137510e-08
+Itération 850, Diff = 1.028608e-08
+Itération 860, Diff = 9.301183e-09
+Itération 870, Diff = 8.410681e-09
+Itération 880, Diff = 7.605595e-09
+Itération 890, Diff = 6.877451e-09
+Itération 900, Diff = 6.219010e-09
+Itération 910, Diff = 5.623557e-09
+Itération 920, Diff = 5.085193e-09
+Itération 930, Diff = 4.598314e-09
+Itération 940, Diff = 4.157951e-09
+Itération 950, Diff = 3.759907e-09
+Itération 960, Diff = 3.400000e-09
+Itération 970, Diff = 3.074422e-09
+Itération 980, Diff = 2.780176e-09
+Itération 990, Diff = 2.513941e-09
+Itération 1000, Diff = 2.273342e-09
+Itération 1010, Diff = 2.055646e-09
+Itération 1020, Diff = 1.858751e-09
+Itération 1030, Diff = 1.680799e-09
+Itération 1040, Diff = 1.519902e-09
+Itération 1050, Diff = 1.374390e-09
+Itération 1060, Diff = 1.242741e-09
+Itération 1070, Diff = 1.123949e-09
+Itération 1080, Diff = 1.016159e-09
+Convergence en 1082 itérations (Diff = 9.959562e-10), temps total = 1241.0654 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 2.38638293e-08
+Noeud 1 : 2.38638293e-08
+Noeud 2 : 2.38638293e-08
+Noeud 3 : 2.38638293e-08
+Noeud 4 : 2.38638293e-08
+Noeud 5 : 2.38638293e-08
+Noeud 6 : 2.38638293e-08
+Noeud 7 : 5.41658130e-05
+Noeud 8 : 2.38638293e-08
+Noeud 9 : 2.38638293e-08
+Noeud 10 : 2.38638293e-08
+Noeud 11 : 2.38638293e-08
+Noeud 12 : 2.38638293e-08
+Noeud 13 : 2.38638293e-08
+Noeud 14 : 2.38638293e-08
+Noeud 15 : 2.38638293e-08
+Noeud 16 : 2.38638293e-08
+Noeud 17 : 2.38638293e-08
+Noeud 18 : 2.38638293e-08
+Noeud 19 : 1.06108649e-05
+...
+Somme du PageRank = 0.999999999981811
+
+==> Suppression: 0.20, Alpha: 0.85
+Arcs après suppression aléatoire de 20.0% : 15804963 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 15804963
+Itération 10, Diff = 3.230210e-03
+Itération 20, Diff = 4.805680e-05
+Itération 30, Diff = 1.739631e-06
+Itération 40, Diff = 1.553571e-07
+Itération 50, Diff = 2.655900e-08
+Itération 60, Diff = 5.176619e-09
+Itération 70, Diff = 1.017525e-09
+Convergence en 71 itérations (Diff = 8.651734e-10), temps total = 43.2948 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 1.21489099e-07
+Noeud 1 : 1.21489099e-07
+Noeud 2 : 1.21489099e-07
+Noeud 3 : 1.21489099e-07
+Noeud 4 : 1.21489099e-07
+Noeud 5 : 1.21489099e-07
+Noeud 6 : 1.21489099e-07
+Noeud 7 : 3.87405113e-05
+Noeud 8 : 1.21489099e-07
+Noeud 9 : 1.21489099e-07
+Noeud 10 : 1.21489099e-07
+Noeud 11 : 1.21489099e-07
+Noeud 12 : 1.21489099e-07
+Noeud 13 : 1.21489099e-07
+Noeud 14 : 1.21489099e-07
+Noeud 15 : 1.21489099e-07
+Noeud 16 : 1.21489099e-07
+Noeud 17 : 1.21489099e-07
+Noeud 18 : 1.21489099e-07
+Noeud 19 : 1.04757769e-05
+...
+Somme du PageRank = 0.999999999978446
+
+==> Suppression: 0.20, Alpha: 0.90
+Arcs après suppression aléatoire de 20.0% : 15802966 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 15802966
+Itération 10, Diff = 5.620749e-03
+Itération 20, Diff = 1.516544e-04
+Itération 30, Diff = 1.020640e-05
+Itération 40, Diff = 1.582517e-06
+Itération 50, Diff = 4.669085e-07
+Itération 60, Diff = 1.606934e-07
+Itération 70, Diff = 5.592224e-08
+Itération 80, Diff = 1.948366e-08
+Itération 90, Diff = 6.790563e-09
+Itération 100, Diff = 2.367235e-09
+Convergence en 109 itérations (Diff = 9.167495e-10), temps total = 64.7700 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 9.04376631e-08
+Noeud 1 : 9.04376631e-08
+Noeud 2 : 9.04376631e-08
+Noeud 3 : 9.04376631e-08
+Noeud 4 : 9.04376631e-08
+Noeud 5 : 9.04376631e-08
+Noeud 6 : 9.04376631e-08
+Noeud 7 : 4.48868375e-05
+Noeud 8 : 9.04376631e-08
+Noeud 9 : 9.04376631e-08
+Noeud 10 : 9.04376631e-08
+Noeud 11 : 9.04376631e-08
+Noeud 12 : 9.04376631e-08
+Noeud 13 : 9.04376631e-08
+Noeud 14 : 9.04376631e-08
+Noeud 15 : 9.04376631e-08
+Noeud 16 : 9.04376631e-08
+Noeud 17 : 9.04376631e-08
+Noeud 18 : 9.04376631e-08
+Noeud 19 : 1.14651637e-05
+...
+Somme du PageRank = 1.000000000022081
+
+==> Suppression: 0.20, Alpha: 0.95
+Arcs après suppression aléatoire de 20.0% : 15802005 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 15802005
+Itération 10, Diff = 9.832076e-03
+Itération 20, Diff = 4.834889e-04
+Itération 30, Diff = 4.925093e-05
+Itération 40, Diff = 1.124666e-05
+Itération 50, Diff = 5.295035e-06
+Itération 60, Diff = 3.108369e-06
+Itération 70, Diff = 1.858459e-06
+Itération 80, Diff = 1.111923e-06
+Itération 90, Diff = 6.654464e-07
+Itération 100, Diff = 3.982959e-07
+Itération 110, Diff = 2.384133e-07
+Itération 120, Diff = 1.427164e-07
+Itération 130, Diff = 8.543375e-08
+Itération 140, Diff = 5.114400e-08
+Itération 150, Diff = 3.061684e-08
+Itération 160, Diff = 1.832868e-08
+Itération 170, Diff = 1.097230e-08
+Itération 180, Diff = 6.568907e-09
+Itération 190, Diff = 3.932552e-09
+Itération 200, Diff = 2.354023e-09
+Itération 210, Diff = 1.409338e-09
+Convergence en 217 itérations (Diff = 9.842308e-10), temps total = 122.7427 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 5.85857062e-08
+Noeud 1 : 5.85857062e-08
+Noeud 2 : 5.85857062e-08
+Noeud 3 : 5.85857062e-08
+Noeud 4 : 5.85857062e-08
+Noeud 5 : 5.85857062e-08
+Noeud 6 : 5.85857062e-08
+Noeud 7 : 4.85613567e-05
+Noeud 8 : 5.85857062e-08
+Noeud 9 : 5.85857062e-08
+Noeud 10 : 5.85857062e-08
+Noeud 11 : 5.85857062e-08
+Noeud 12 : 5.85857062e-08
+Noeud 13 : 5.85857062e-08
+Noeud 14 : 5.85857062e-08
+Noeud 15 : 5.85857062e-08
+Noeud 16 : 5.85857062e-08
+Noeud 17 : 5.85857062e-08
+Noeud 18 : 5.85857062e-08
+Noeud 19 : 1.15720743e-05
+...
+Somme du PageRank = 1.000000000007185
+
+==> Suppression: 0.20, Alpha: 0.99
+Arcs après suppression aléatoire de 20.0% : 15803356 (sur 19753078 initialement)
+Matrice : 1634989 x 1634989, Éléments non nuls : 15803356
+Itération 10, Diff = 1.398981e-02
+Itération 20, Diff = 1.026791e-03
+Itération 30, Diff = 1.653877e-04
+Itération 40, Diff = 6.103105e-05
+Itération 50, Diff = 4.466625e-05
+Itération 60, Diff = 3.962908e-05
+Itération 70, Diff = 3.580130e-05
+Itération 80, Diff = 3.236517e-05
+Itération 90, Diff = 2.926458e-05
+Itération 100, Diff = 2.646233e-05
+Itération 110, Diff = 2.392886e-05
+Itération 120, Diff = 2.163818e-05
+Itération 130, Diff = 1.956679e-05
+Itération 140, Diff = 1.769369e-05
+Itération 150, Diff = 1.599990e-05
+Itération 160, Diff = 1.446826e-05
+Itération 170, Diff = 1.308323e-05
+Itération 180, Diff = 1.183080e-05
+Itération 190, Diff = 1.069825e-05
+Itération 200, Diff = 9.674126e-06
+Itération 210, Diff = 8.748037e-06
+Itération 220, Diff = 7.910602e-06
+Itération 230, Diff = 7.153333e-06
+Itération 240, Diff = 6.468556e-06
+Itération 250, Diff = 5.849332e-06
+Itération 260, Diff = 5.289385e-06
+Itération 270, Diff = 4.783041e-06
+Itération 280, Diff = 4.325169e-06
+Itération 290, Diff = 3.911127e-06
+Itération 300, Diff = 3.536722e-06
+Itération 310, Diff = 3.198158e-06
+Itération 320, Diff = 2.892003e-06
+Itération 330, Diff = 2.615157e-06
+Itération 340, Diff = 2.364813e-06
+Itération 350, Diff = 2.138433e-06
+Itération 360, Diff = 1.933725e-06
+Itération 370, Diff = 1.748613e-06
+Itération 380, Diff = 1.581221e-06
+Itération 390, Diff = 1.429853e-06
+Itération 400, Diff = 1.292977e-06
+Itération 410, Diff = 1.169202e-06
+Itération 420, Diff = 1.057277e-06
+Itération 430, Diff = 9.560653e-07
+Itération 440, Diff = 8.645431e-07
+Itération 450, Diff = 7.817819e-07
+Itération 460, Diff = 7.069435e-07
+Itération 470, Diff = 6.392691e-07
+Itération 480, Diff = 5.780732e-07
+Itération 490, Diff = 5.227355e-07
+Itération 500, Diff = 4.726946e-07
+Itération 510, Diff = 4.274447e-07
+Itération 520, Diff = 3.865260e-07
+Itération 530, Diff = 3.495250e-07
+Itération 540, Diff = 3.160654e-07
+Itération 550, Diff = 2.858091e-07
+Itération 560, Diff = 2.584492e-07
+Itération 570, Diff = 2.337082e-07
+Itération 580, Diff = 2.113357e-07
+Itération 590, Diff = 1.911051e-07
+Itération 600, Diff = 1.728112e-07
+Itération 610, Diff = 1.562681e-07
+Itération 620, Diff = 1.413088e-07
+Itération 630, Diff = 1.277816e-07
+Itération 640, Diff = 1.155494e-07
+Itération 650, Diff = 1.044881e-07
+Itération 660, Diff = 9.448590e-08
+Itération 670, Diff = 8.544106e-08
+Itération 680, Diff = 7.726163e-08
+Itération 690, Diff = 6.986574e-08
+Itération 700, Diff = 6.317740e-08
+Itération 710, Diff = 5.712969e-08
+Itération 720, Diff = 5.166089e-08
+Itération 730, Diff = 4.671533e-08
+Itération 740, Diff = 4.224345e-08
+Itération 750, Diff = 3.819944e-08
+Itération 760, Diff = 3.454285e-08
+Itération 770, Diff = 3.123596e-08
+Itération 780, Diff = 2.824602e-08
+Itération 790, Diff = 2.554220e-08
+Itération 800, Diff = 2.309678e-08
+Itération 810, Diff = 2.088577e-08
+Itération 820, Diff = 1.888674e-08
+Itération 830, Diff = 1.707867e-08
+Itération 840, Diff = 1.544362e-08
+Itération 850, Diff = 1.396550e-08
+Itération 860, Diff = 1.262862e-08
+Itération 870, Diff = 1.141965e-08
+Itération 880, Diff = 1.032657e-08
+Itération 890, Diff = 9.338046e-09
+Itération 900, Diff = 8.444205e-09
+Itération 910, Diff = 7.635831e-09
+Itération 920, Diff = 6.904785e-09
+Itération 930, Diff = 6.243852e-09
+Itération 940, Diff = 5.646209e-09
+Itération 950, Diff = 5.105681e-09
+Itération 960, Diff = 4.616759e-09
+Itération 970, Diff = 4.174935e-09
+Itération 980, Diff = 3.775306e-09
+Itération 990, Diff = 3.413631e-09
+Itération 1000, Diff = 3.087018e-09
+Itération 1010, Diff = 2.791492e-09
+Itération 1020, Diff = 2.524454e-09
+Itération 1030, Diff = 2.282848e-09
+Itération 1040, Diff = 2.064264e-09
+Itération 1050, Diff = 1.866382e-09
+Itération 1060, Diff = 1.687906e-09
+Itération 1070, Diff = 1.526517e-09
+Itération 1080, Diff = 1.380053e-09
+Itération 1090, Diff = 1.247815e-09
+Itération 1100, Diff = 1.128416e-09
+Itération 1110, Diff = 1.020712e-09
+Convergence en 1113 itérations (Diff = 9.901040e-10), temps total = 909.7408 sec
+
+Scores de PageRank (premiers 20 ou moins):
+Noeud 0 : 3.28097374e-08
+Noeud 1 : 3.28097374e-08
+Noeud 2 : 3.28097374e-08
+Noeud 3 : 3.28097374e-08
+Noeud 4 : 3.28097374e-08
+Noeud 5 : 3.28097374e-08
+Noeud 6 : 3.28097374e-08
+Noeud 7 : 3.85842366e-05
+Noeud 8 : 3.28097374e-08
+Noeud 9 : 3.28097374e-08
+Noeud 10 : 3.28097374e-08
+Noeud 11 : 3.28097374e-08
+Noeud 12 : 3.28097374e-08
+Noeud 13 : 3.28097374e-08
+Noeud 14 : 3.28097374e-08
+Noeud 15 : 3.28097374e-08
+Noeud 16 : 3.28097374e-08
+Noeud 17 : 3.28097374e-08
+Noeud 18 : 3.28097374e-08
+Noeud 19 : 1.06786707e-05
+...
+Somme du PageRank = 1.000000000017716

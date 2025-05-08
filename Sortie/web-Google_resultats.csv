@@ -1,0 +1,13 @@
+Matrice,Pourcentage_Suppression,Alpha,Iterations,Temps,Somme_PageRank
+Matrix\web-Google.mtx,0.00,0.85,103,23.9219,1.000000000002470
+Matrix\web-Google.mtx,0.00,0.90,158,23.0806,1.000000000001104
+Matrix\web-Google.mtx,0.00,0.95,322,40.8587,1.000000000003372
+Matrix\web-Google.mtx,0.00,0.99,1628,193.9392,1.000000000001595
+Matrix\web-Google.mtx,0.10,0.85,102,7.7772,1.000000000003491
+Matrix\web-Google.mtx,0.10,0.90,155,12.1560,1.000000000003286
+Matrix\web-Google.mtx,0.10,0.95,316,30.6569,0.999999999999885
+Matrix\web-Google.mtx,0.10,0.99,1596,190.4225,0.999999999996889
+Matrix\web-Google.mtx,0.20,0.85,101,10.3397,1.000000000004014
+Matrix\web-Google.mtx,0.20,0.90,154,18.8936,1.000000000003712
+Matrix\web-Google.mtx,0.20,0.95,313,45.5589,1.000000000002486
+Matrix\web-Google.mtx,0.20,0.99,1575,215.2442,0.999999999999838

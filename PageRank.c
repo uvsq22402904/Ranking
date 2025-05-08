@@ -12,7 +12,7 @@ indice M = 0; // Nombre d'éléments non nuls (liens)
 proba alpha[] = {0.85, 0.90, 0.95, 0.99};  // Facteur de téléportation
 proba pourcentage_suppression[] = {0.0, 0.1, 0.2}; // Pourcentage de suppression des liens 
 proba sigma = 1e-9; // Critère de convergence (epsilon) - plus strict pour double
-int *est_dangling = NULL; // Tableau booléen : 1 si le nœud est un dangling node
+indice *est_dangling = NULL; // Tableau booléen : 1 si le nœud est un dangling node
 
 // Structure pour les éléments de matrice creuse (triplets)
 struct elem {
@@ -23,7 +23,7 @@ struct elem {
 struct elem *p = NULL; // Tableau des éléments non nuls
 proba *x = NULL;       // Vecteur PageRank courant
 proba *y = NULL;       // Vecteur PageRank suivant (vecteur de travail)
-int *degre_sortant = NULL; // Stocke le degré sortant de chaque nœud
+indice *degre_sortant = NULL; // Stocke le degré sortant de chaque nœud
 
 
 
@@ -39,7 +39,7 @@ void initialiser_vecteurs_pagerank();
 void identifier_noeuds_dangling();
 
 // Modification de la fonction pour retourner le nombre d'itérations et le temps de convergence via des pointeurs
-void iteration_puissance(proba alpha, int *iterations, double *temps);
+void iteration_puissance(proba alpha, indice *iterations, proba *temps);
 
 
 proba norme_L1(proba *v1, proba *v2, indice taille);
@@ -47,17 +47,17 @@ void recopier(proba *dest, proba *src, indice taille);
 void multiplication_pagerank(proba *z, proba *w, proba alpha);
 
 // Fonction pour enregistrer les résultats dans un fichier pour le rapport
-void enregistrer_resultats(char *nom_fichier, char *nom_matrice, proba pourcentage_suppression, proba alpha, int iterations, double temps, proba somme_pagerank);
+void enregistrer_resultats(char *nom_fichier, char *nom_matrice, proba pourcentage_suppression, proba alpha, indice iterations, proba temps, proba somme_pagerank);
 
 
 void liberer_memoire();
 
 // --- Fonction Principale ---
 int main() {
-    char *nom_fichier = "webbase-1M.mtx";
-    char *fichier_resultats = "resultats.csv";
-    int nb_suppressions = sizeof(pourcentage_suppression) / sizeof(pourcentage_suppression[0]);
-    int nb_alphas = sizeof(alpha) / sizeof(alpha[0]);
+    char *nom_fichier = "Matrix\\wikipedia-20051105.mtx";
+    char *fichier_resultats = "wikipedia-20051105_resultats.csv";
+    indice nb_suppressions = sizeof(pourcentage_suppression) / sizeof(pourcentage_suppression[0]);
+    indice nb_alphas = sizeof(alpha) / sizeof(alpha[0]);
 
     // Écrire l'en-tête du fichier CSV
     FILE *f = fopen(fichier_resultats, "w");
@@ -66,8 +66,8 @@ int main() {
         fclose(f);
     }
 
-    for (int i = 0; i < nb_suppressions; i++) {
-        for (int j = 0; j < nb_alphas; j++) {
+    for (indice i = 0; i < nb_suppressions; i++) {
+        for (indice j = 0; j < nb_alphas; j++) {
             printf("\n==> Suppression: %.2f, Alpha: %.2f\n", pourcentage_suppression[i], alpha[j]);
 
             lire_et_normaliser_mtx_avec_suppression(nom_fichier, pourcentage_suppression[i]);
@@ -92,12 +92,12 @@ int main() {
                 continue;
             }
 
-            int iterations;
-            double temps;
+            indice iterations;
+            proba temps;
             iteration_puissance(alpha[j], &iterations, &temps);
 
             printf("\nScores de PageRank (premiers 20 ou moins):\n");
-            int nb_affichage = (N < 20) ? N : 20;
+            indice nb_affichage = (N < 20) ? N : 20;
             for (indice k = 0; k < nb_affichage; k++) {
                 printf("Noeud %d : %.8e\n", k, x[k]);
             }
@@ -127,7 +127,7 @@ int main() {
 void lire_et_normaliser_mtx(char *nom_fichier) {
     FILE *f;
     char ligne[256];
-    int L; 
+    indice L; 
 
     f = fopen(nom_fichier, "r");
     if (f == NULL) {
@@ -166,7 +166,7 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
 
 
     p = malloc(M * sizeof(struct elem));
-    degre_sortant = calloc(N, sizeof(int)); 
+    degre_sortant = calloc(N, sizeof(indice)); 
     if (!p || !degre_sortant) {
         fprintf(stderr, "Erreur d'allocation mémoire pour p ou degre_sortant.\n");
         fclose(f);
@@ -175,9 +175,22 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
     }
 
     indice m_courant = 0;
-    int ligne_elem, col_elem;
-    double val_elem; 
-    while (m_courant < M && fscanf(f, "%d %d %lf", &ligne_elem, &col_elem, &val_elem) == 3) {
+    indice ligne_elem, col_elem;
+    proba val_elem; 
+    char buffer[256];
+
+    while (m_courant < M && fgets(buffer, sizeof(buffer), f)) {
+        // Tenter de lire avec trois valeurs (i, j, val)
+        int items_read = sscanf(buffer, "%d %d %lf", &ligne_elem, &col_elem, &val_elem);
+        if (items_read == 2) {
+            // Format (i, j) sans valeur, assigner 1.0
+            val_elem = 1.0;
+        } else if (items_read != 3) {
+            fprintf(stderr, "Erreur de lecture à l'élément %d: format invalide.\n", m_courant + 1);
+            fclose(f);
+            free(p); free(degre_sortant); p = NULL; degre_sortant = NULL; N=0; M=0;
+            return;
+        }
 
         p[m_courant].i = ligne_elem - 1;
         p[m_courant].j = col_elem - 1;
@@ -222,7 +235,7 @@ void lire_et_normaliser_mtx(char *nom_fichier) {
 void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentage_suppression) {
     FILE *f;
     char ligne[256];
-    int L;
+    indice L;
     
     srand(time(NULL));
     
@@ -256,7 +269,7 @@ void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentag
     
     // Allouer de la mémoire pour stocker tous les éléments lus
     struct elem *temp_p = malloc(L * sizeof(struct elem));
-    degre_sortant = calloc(N, sizeof(int));
+    degre_sortant = calloc(N, sizeof(indice));
     if (!temp_p || !degre_sortant) {
         fprintf(stderr, "Erreur d'allocation mémoire.\n");
         fclose(f);
@@ -267,19 +280,32 @@ void lire_et_normaliser_mtx_avec_suppression(char *nom_fichier, proba pourcentag
 
     // Lire tous les éléments du fichier
     indice elements_lus = 0;
-    int ligne_elem, col_elem;
-    double val_elem;
-    
-    while (elements_lus < L && fscanf(f, "%d %d %lf", &ligne_elem, &col_elem, &val_elem) == 3) {
-        int i = ligne_elem - 1;
-        int j = col_elem - 1;
+    indice ligne_elem, col_elem;
+    proba val_elem;
+    char buffer[256];
+
+    while (elements_lus < L && fgets(buffer, sizeof(buffer), f)) {
+        // Tenter de lire avec trois valeurs (i, j, val)
+        int items_read = sscanf(buffer, "%d %d %lf", &ligne_elem, &col_elem, &val_elem);
+        if (items_read == 2) {
+            // Format (i, j) sans valeur, assigner 1.0
+            val_elem = 1.0;
+        } else if (items_read != 3) {
+            fprintf(stderr, "Erreur de lecture à l'élément %d: format invalide.\n", elements_lus + 1);
+            fclose(f);
+            free(temp_p); free(degre_sortant);
+            temp_p = NULL; degre_sortant = NULL; N=0; M=0;
+            return;
+        }
+        indice i = ligne_elem - 1;
+        indice j = col_elem - 1;
         
         if (i < 0 || i >= N || j < 0 || j >= N) {
             fprintf(stderr, "Attention: Index (%d, %d) hors limites [0, %d) lu à l'élément %d.\n",
                     ligne_elem, col_elem, N, elements_lus + 1);
         } else {
             // Décider aléatoirement si on garde cet arc
-            double u = (double)rand() / RAND_MAX;
+            proba u = (proba)rand() / RAND_MAX;
             
             if (u >= pourcentage_suppression) {
                 // On garde l'arc
@@ -339,7 +365,7 @@ void initialiser_vecteurs_pagerank() {
 }
 
 void identifier_noeuds_dangling() {
-    est_dangling = malloc(N * sizeof(int)); 
+    est_dangling = malloc(N * sizeof(indice)); 
     if (!est_dangling) {
         free(degre_sortant); degre_sortant = NULL;
         return;
@@ -400,7 +426,7 @@ void multiplication_pagerank(proba *z, proba *w, proba alpha) {
 
 }
 
-void iteration_puissance(proba alpha, int *iterations, double *temps) {
+void iteration_puissance(proba alpha, indice *iterations, proba *temps) {
     indice k = 0;
     proba diff = 1.0;
     struct timeval t1, t2;
@@ -433,7 +459,7 @@ void iteration_puissance(proba alpha, int *iterations, double *temps) {
     printf("Convergence en %d itérations (Diff = %e), temps total = %.4f sec\n", k, diff, *temps);
 }
 
-void enregistrer_resultats(char *nom_fichier, char *nom_matrice, proba pourcentage_suppression, proba alpha, int iterations, double temps, proba somme_pagerank) {
+void enregistrer_resultats(char *nom_fichier, char *nom_matrice, proba pourcentage_suppression, proba alpha, indice iterations, proba temps, proba somme_pagerank) {
     FILE *f = fopen(nom_fichier, "a");
     if (f == NULL) {
         fprintf(stderr, "Erreur d'ouverture du fichier de résultats '%s'\n", nom_fichier);
