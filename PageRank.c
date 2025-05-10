@@ -3,7 +3,8 @@
 #include <sys/time.h>
 #include <math.h> // Pour fabs
 
-// Utiliser double pour une meilleure précision
+// Utiliser double pour une meilleure précision 
+
 typedef double proba;
 typedef int indice;
 
